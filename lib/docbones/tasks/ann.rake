@@ -1,6 +1,6 @@
 
 begin
-  require 'bones/smtp_tls'
+  require 'docbones/smtp_tls'
 rescue LoadError
   require 'net/smtp'
 end

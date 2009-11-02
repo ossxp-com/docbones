@@ -2,13 +2,13 @@
 $:.unshift('lib')
 
 require 'docbones'
-Bones.setup
+Docbones.setup
 
 PROJ.name = 'docbones'
 PROJ.authors = 'cuirui'
 PROJ.email = 'cuirui@ossxp.com'
 PROJ.url = 'http://www.ossxp.com'
-PROJ.version = Bones::VERSION
+PROJ.version = Docbones::VERSION
 PROJ.release_name = 'Maxilla'
 PROJ.ruby_opts = %w[-W0]
 PROJ.readme_file = 'README.rdoc'
@@ -29,7 +29,7 @@ PROJ.ann.email[:from] = 'Tim Pease'
 
 PROJ.gem.extras[:post_install_message] = <<-MSG
 --------------------------
- Keep rattlin' dem bones!
+ Keep rattlin' dem docbones!
 --------------------------
 MSG
 
@@ -38,7 +38,7 @@ PROJ.ann.text = PROJ.gem.extras[:post_install_message]
 
 task :default => 'spec:specdoc'
 task 'ann:prereqs' do
-  PROJ.name = 'Mr Bones'
+  PROJ.name = 'Mr Docbones'
 end
 
 PROJ.gem.development_dependencies.clear

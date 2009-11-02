@@ -36,7 +36,7 @@ class GemPackageTask < Rake::PackageTask
 
     local_setup = File.join(Dir.pwd, %w[tasks setup.rb])
     if !test(?e, local_setup)
-      Dir.glob(::Bones.path(%w[lib bones tasks *])).each {|fn| bones_files << fn}
+      Dir.glob(::Docbones.path(%w[lib docbones tasks *])).each {|fn| bones_files << fn}
     end
   end
 
@@ -88,7 +88,7 @@ class GemPackageTask < Rake::PackageTask
     end
   end
 end  # class GemPackageTask
-end  # module Bones
+end  # module Docbones
 
 namespace :gem do
 
@@ -149,7 +149,7 @@ namespace :gem do
     end
   end  # Gem::Specification.new
 
-  Bones::GemPackageTask.new(PROJ.gem._spec) do |pkg|
+  Docbones::GemPackageTask.new(PROJ.gem._spec) do |pkg|
     pkg.need_tar = PROJ.gem.need_tar
     pkg.need_zip = PROJ.gem.need_zip
   end

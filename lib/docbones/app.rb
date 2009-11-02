@@ -6,7 +6,7 @@ require 'erb'
 module Docbones
 class App
 
-  # Create a new instance of App, and run the +bones+ application given
+  # Create a new instance of App, and run the +docbones+ application given
   # the command line _args_.
   #
   def self.run( args )
@@ -34,7 +34,7 @@ class App
       when nil, '-h', '--help'
         help
       when '-v', '--version'
-        @out.puts "Mr Bones #{::Bones::VERSION}"
+        @out.puts "Docbones  #{::Docbones::VERSION}"
         nil
       else
         raise "Unknown command #{cmd_str.inspect}"
@@ -43,17 +43,17 @@ class App
     cmd.run args if cmd
 
   rescue StandardError => err
-    @err.puts "ERROR:  While executing bones ... (#{err.class})"
+    @err.puts "ERROR:  While executing docbones ... (#{err.class})"
     @err.puts "    #{err.to_s}"
     exit 1
   end
 
-  # Show the toplevel Mr Bones help message.
+  # Show the toplevel Docbones help message.
   #
   def help
     @out.puts <<-MSG
 
-  Mr Bones is a handy tool that builds a skeleton for your new Ruby
+  Docbones is a handy tool that builds a skeleton for your new Ruby
   projects. The skeleton contains some starter code and a collection of
   rake tasks to ease the management and deployment of your source code.
 
@@ -87,6 +87,6 @@ class App
 end  # class App
 end  # module Docbones
 
-Bones.require_all_libs_relative_to(__FILE__)
+Docbones.require_all_libs_relative_to(__FILE__)
 
 # EOF

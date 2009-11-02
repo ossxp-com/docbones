@@ -1,7 +1,7 @@
 
 if HAVE_BONES
 
-namespace :bones do
+namespace :docbones do
 
   desc 'Show the PROJ open struct'
   task :debug do |t|
@@ -9,11 +9,11 @@ namespace :bones do
       t.application.top_level_tasks.pop
     end
 
-    if atr then Bones::Debug.show_attr(PROJ, atr)
-    else Bones::Debug.show PROJ end
+    if atr then Docbones::Debug.show_attr(PROJ, atr)
+    else Docbones::Debug.show PROJ end
   end
 
-end  # namespace :bones
+end  # namespace :docbones
 
 end  # HAVE_BONES
 

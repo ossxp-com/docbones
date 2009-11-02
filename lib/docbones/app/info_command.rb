@@ -8,7 +8,7 @@ class InfoCommand < Command
     parse args
 
     skeleton_dir = File.join(mrbones_dir, 'data')
-    skeleton_dir = ::Bones.path('data') unless test(?d, skeleton_dir)
+    skeleton_dir = ::Docbones.path('data') unless test(?d, skeleton_dir)
 
     msg  = "\n"
     msg << "The default project skeleton will be copied from:\n"

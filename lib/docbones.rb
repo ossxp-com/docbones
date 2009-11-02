@@ -23,7 +23,7 @@ module Docbones
   end
 
   # call-seq:
-  #    Bones.require_all_libs_relative_to( filename, directory = nil )
+  #    Docbones.require_all_libs_relative_to( filename, directory = nil )
   #
   # Utility method used to rquire all files ending in .rb that lie in the
   # directory below this file that has the same name as the filename passed
@@ -39,7 +39,7 @@ module Docbones
   end
 
   # call-seq:
-  #    Bones.setup
+  #    Docbones.setup
  
   #
   def self.setup
@@ -50,8 +50,8 @@ module Docbones
       return
     end
 
-    bones_setup = ::Bones.path %w[lib bones tasks setup.rb]
-    load bones_setup
+    docbones_setup = ::Docbones.path %w[lib docbones tasks setup.rb]
+    load docbones_setup
 
     rakefiles = Dir.glob(File.join(Dir.pwd, %w[tasks *.rake])).sort
     rakefiles.each {|fn| Rake.application.add_import(fn)}
@@ -63,6 +63,6 @@ module Docbones
 
 end  # module Docbones
 
-Bones.require_all_libs_relative_to(__FILE__)
+Docbones.require_all_libs_relative_to(__FILE__)
 
 # EOF
