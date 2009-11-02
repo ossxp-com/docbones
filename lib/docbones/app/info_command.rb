@@ -1,5 +1,5 @@
 
-module Bones
+module Docbones
 class App
 
 class InfoCommand < Command
@@ -53,6 +53,6 @@ class InfoCommand < Command
 
 end  # class InfoCommand
 end  # class App
-end  # module Bones
+end  # module Docbones
 
 # EOF

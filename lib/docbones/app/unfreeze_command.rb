@@ -1,5 +1,5 @@
 
-module Bones
+module Docbones
 class App
 
 class UnfreezeCommand < Command
@@ -48,6 +48,6 @@ class UnfreezeCommand < Command
 
 end  # class UnfreezeCommand
 end  # class App
-end  # module Bones
+end  # module Docbones
 
 # EOF

@@ -1,5 +1,5 @@
 
-module Bones
+module Docbones
 class App
 
 class CreateCommand < Command
@@ -81,6 +81,6 @@ class CreateCommand < Command
 
 end  # class CreateCommand
 end  # class App
-end  # module Bones
+end  # module Docbones
 
 # EOF

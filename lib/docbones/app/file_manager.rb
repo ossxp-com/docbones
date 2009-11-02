@@ -1,7 +1,7 @@
 
 require 'fileutils'
 
-module Bones
+module Docbones
 class App
 
 class FileManager
@@ -170,6 +170,6 @@ class FileManager
 
 end  # class FileManager
 end  # class App
-end  # module Bones
+end  # module Docbones
 
 # EOF

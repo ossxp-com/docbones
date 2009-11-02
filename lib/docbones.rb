@@ -1,7 +1,7 @@
 
 require 'rbconfig'
 
-module Bones
+module Docbones
 
   # :stopdoc:
   VERSION = '1.1.1'
@@ -14,7 +14,7 @@ module Bones
                    Config::CONFIG['ruby_install_name']).sub(/.*\s.*/m, '"\&"')
   # :startdoc:
 
-  # Returns the path for Mr Bones. If any arguments are given,
+  # Returns the path for Docbones. If any arguments are given,
   # they will be joined to the end of the path using
   # <tt>File.join</tt>.
   #
@@ -40,7 +40,7 @@ module Bones
 
   # call-seq:
   #    Bones.setup
-  #
+ 
   #
   def self.setup
     local_setup = File.join(Dir.pwd, %w[tasks setup.rb])
@@ -61,7 +61,7 @@ module Bones
   #       these guys are just grabbing whatever is there and not pulling
   #       the filenames from the manifest
 
-end  # module Bones
+end  # module Docbones
 
 Bones.require_all_libs_relative_to(__FILE__)
 

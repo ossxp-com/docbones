@@ -2,7 +2,7 @@
 require 'pp'
 require 'stringio'
 
-module Bones
+module Docbones
 
 # Helper module that will pretty print OpenStruct objects. It is used mainly
 # for debugging the Mr Bones project open struct.
@@ -67,6 +67,6 @@ module Debug
   end
 
 end  # module Debug
-end  # module Bones
+end  # module Docbones
 
 # EOF

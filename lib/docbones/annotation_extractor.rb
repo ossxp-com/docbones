@@ -6,7 +6,7 @@ rescue LoadError
   HAVE_COLOR = false
 end
 
-module Bones
+module Docbones
 
 # A helper class used to find and display any annotations in a collection of
 # project files.
@@ -106,6 +106,6 @@ class AnnotationExtractor
   end
 
 end  # class AnnotationExtractor
-end  # module Bones
+end  # module Docbones
 
 # EOF

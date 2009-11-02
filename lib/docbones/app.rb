@@ -3,7 +3,7 @@ require 'fileutils'
 require 'optparse'
 require 'erb'
 
-module Bones
+module Docbones
 class App
 
   # Create a new instance of App, and run the +bones+ application given
@@ -85,7 +85,7 @@ class App
   end
 
 end  # class App
-end  # module Bones
+end  # module Docbones
 
 Bones.require_all_libs_relative_to(__FILE__)
 

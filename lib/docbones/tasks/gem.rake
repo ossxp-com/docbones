@@ -4,7 +4,7 @@ require 'rake/packagetask'
 require 'rubygems/user_interaction'
 require 'rubygems/builder'
 
-module Bones
+module Docbones
 class GemPackageTask < Rake::PackageTask
   # Ruby GEM spec containing the metadata for this package.  The
   # name, version and package_files are automatically determined
