@@ -6,7 +6,7 @@ task :notes do |t|
   id = if t.application.top_level_tasks.length > 1
     t.application.top_level_tasks.slice!(1..-1).join(' ')
   end
-  Bones::AnnotationExtractor.enumerate(
+  Docbones::AnnotationExtractor.enumerate(
       PROJ, PROJ.notes.tags.join('|'), id, :tag => true)
 end
 
@@ -17,7 +17,7 @@ namespace :notes do
       id = if t.application.top_level_tasks.length > 1
         t.application.top_level_tasks.slice!(1..-1).join(' ')
       end
-      Bones::AnnotationExtractor.enumerate(PROJ, tag, id)
+      Docbones::AnnotationExtractor.enumerate(PROJ, tag, id)
     end
   end
 end

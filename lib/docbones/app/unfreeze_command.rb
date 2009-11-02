@@ -8,7 +8,7 @@ class UnfreezeCommand < Command
     parse args
 
     fm = FileManager.new(
-      :source => repository || ::Bones.path('data'),
+      :source => repository || ::Docbones.path('data'),
       :destination => output_dir,
       :stdout => @out,
       :stderr => @err,

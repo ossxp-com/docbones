@@ -8,7 +8,7 @@ class FreezeCommand < Command
     parse args
 
     fm = FileManager.new(
-      :source => repository || ::Bones.path('data'),
+      :source => repository || ::Docbones.path('data'),
       :destination => output_dir,
       :stdout => @out,
       :stderr => @err,
@@ -22,7 +22,7 @@ class FreezeCommand < Command
     copy_tasks(File.join(output_dir, 'tasks')) if with_tasks?
 
     @out.puts "Project skeleton #{name.inspect} " <<
-              "has been frozen to Mr Bones #{::Bones::VERSION}"
+              "has been frozen to Mr Bones #{::Docbones::VERSION}"
   end
 
   def parse( args )

@@ -16,7 +16,7 @@ class Command
       :name => nil,
       :output_dir => nil
     }
-    @options[:skeleton_dir] = ::Bones.path('data') unless test(?d, skeleton_dir)
+    @options[:skeleton_dir] = ::Docbones.path('data') unless test(?d, skeleton_dir)
   end
 
   def run( args )
@@ -49,7 +49,7 @@ class Command
     nil
   end
 
-  # Returns +true+ if we are going to copy the Mr Bones tasks into the
+  # Returns +true+ if we are going to copy the Docbones  tasks into the
   # destination directory. Normally this will return +false+.
   #
   def with_tasks?
@@ -60,7 +60,7 @@ class Command
   #
   def copy_tasks( to )
     fm = FileManager.new(
-      :source => ::Bones.path(%w[lib bones tasks]),
+      :source => ::Docbones.path(%w[lib docbones tasks]),
       :destination => to,
       :stdout => @out,
       :stderr => @err,
@@ -76,12 +76,12 @@ class Command
     options[:verbose]
   end
 
-  # Returns the .bones resource directory in the user's home directory.
+  # Returns the .docbones resource directory in the user's home directory.
   #
   def mrbones_dir
     return @mrbones_dir if defined? @mrbones_dir
 
-    path = File.join(::Bones::HOME, '.mrbones')
+    path = File.join(::Docbones::HOME, '.mrdocbones')
     @mrbones_dir = File.expand_path(path)
   end
 

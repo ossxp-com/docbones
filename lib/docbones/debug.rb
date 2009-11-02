@@ -5,7 +5,7 @@ require 'stringio'
 module Docbones
 
 # Helper module that will pretty print OpenStruct objects. It is used mainly
-# for debugging the Mr Bones project open struct.
+# for debugging the Docbones  project open struct.
 #
 module Debug
 
