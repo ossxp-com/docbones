@@ -1,5 +1,5 @@
 
-if HAVE_BONES
+if HAVE_DOCBONES
 
 desc "Enumerate all annotations"
 task :notes do |t|
@@ -22,6 +22,6 @@ namespace :notes do
   end
 end
 
-end  # if HAVE_BONES
+end  # if HAVE_DOCBONES
 
 # EOF

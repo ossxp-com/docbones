@@ -1,5 +1,5 @@
 
-if HAVE_BONES
+if HAVE_DOCBONES
 
 namespace :docbones do
 
@@ -15,6 +15,6 @@ namespace :docbones do
 
 end  # namespace :docbones
 
-end  # HAVE_BONES
+end  # HAVE_DOCBONES
 
 # EOF

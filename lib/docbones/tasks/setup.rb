@@ -147,7 +147,7 @@ RCOV = "#{RUBY} -S rcov"
 RDOC = "#{RUBY} -S rdoc"
 GEM  = "#{RUBY} -S gem"
 
-%w(rcov spec/rake/spectask rubyforge bones facets/ansicode zentest).each do |lib|
+%w(rcov spec/rake/spectask rubyforge docbones facets/ansicode zentest).each do |lib|
   begin
     require lib
     Object.instance_eval {const_set "HAVE_#{lib.tr('/','_').upcase}", true}
@@ -162,7 +162,7 @@ HAVE_GIT = (Dir.entries(Dir.pwd).include?('.git') and
 
 # Add docbones as a development dependency
 #
-if HAVE_BONES
+if HAVE_DOCBONES
   PROJ.gem.development_dependencies << ['docbones', ">= #{Docbones::VERSION}"]
 end
 
