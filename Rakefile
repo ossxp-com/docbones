@@ -4,20 +4,20 @@ $:.unshift('lib')
 require 'bones'
 Bones.setup
 
-PROJ.name = 'bones'
-PROJ.authors = 'Tim Pease'
-PROJ.email = 'tim.pease@gmail.com'
-PROJ.url = 'http://codeforpeople.rubyforge.org/bones'
+PROJ.name = 'docbones'
+PROJ.authors = 'cuirui'
+PROJ.email = 'cuirui@ossxp.com'
+PROJ.url = 'http://www.ossxp.com'
 PROJ.version = Bones::VERSION
 PROJ.release_name = 'Maxilla'
 PROJ.ruby_opts = %w[-W0]
 PROJ.readme_file = 'README.rdoc'
 PROJ.ignore_file = '.gitignore'
-PROJ.exclude << 'bones.gemspec'
+PROJ.exclude << 'docbones.gemspec'
 
 PROJ.rubyforge.name = 'codeforpeople'
 
-PROJ.rdoc.remote_dir = 'bones'
+PROJ.rdoc.remote_dir = 'docbones'
 PROJ.rdoc.exclude << '^data/'
 PROJ.notes.exclude = %w(^README\.txt$ ^data/ ^tasks/setup.rb$)
 
