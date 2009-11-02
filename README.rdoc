@@ -1,6 +1,6 @@
-Mr Bones
-    by Tim Pease
-    http://codeforpeople.rubyforge.org/bones
+Mr  Docbones
+    by cuirui
+    http://www.ossxp.com
 
 == DESCRIPTION:
 

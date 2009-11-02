@@ -1,7 +1,7 @@
 
 $:.unshift('lib')
 
-require 'bones'
+require 'docbones'
 Bones.setup
 
 PROJ.name = 'docbones'
