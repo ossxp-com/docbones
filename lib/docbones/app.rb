@@ -27,7 +27,6 @@ class App
     cmd_str = args.shift
     cmd = case cmd_str
       when 'create';    CreateCommand.new(@out, @err)
-      when 'update';    UpdateCommand.new(@out, @err)
       when 'freeze';    FreezeCommand.new(@out, @err)
       when 'unfreeze';  UnfreezeCommand.new(@out, @err)
       when 'info';      InfoCommand.new(@out, @err)
@@ -53,32 +52,22 @@ class App
   def help
     @out.puts <<-MSG
 
-  Docbones is a handy tool that builds a skeleton for your new Ruby
-  projects. The skeleton contains some starter code and a collection of
-  rake tasks to ease the management and deployment of your source code.
-
   Usage:
-    bones -h/--help
-    bones -v/--version
-    bones command [options] [arguments]
-
-  Examples:
-    bones create new_project
-    bones freeze -r git://github.com/fudgestudios/bort.git bort
-    bones create -s bort new_rails_project
+    docbones -h/--help
+    docbones -v/--version
+    docbones command [options] [arguments]
 
   Commands:
-    bones create          create a new project from a skeleton
-    bones update          copy Mr Bones tasks to a project
-    bones freeze          create a new skeleton in ~/.mrbones/
-    bones unfreeze        remove a skeleton from ~/.mrbones/
-    bones info            show information about available skeletons
+    docbones create          create a new project from a skeleton
+    docbones freeze          create a new skeleton in ~/.mrdocbones/
+    docbones unfreeze        remove a skeleton from ~/.mrdocbones/
+    docbones info            show information about available skeletons
 
   Further Help:
     Each command has a '--help' option that will provide detailed
     information for that command.
 
-    http://codeforpeople.rubyforge.org/bones/
+    http://www.ossxp.com
 
     MSG
     nil

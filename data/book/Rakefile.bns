@@ -3,8 +3,8 @@
 # are where the options are used.
 
 begin
-  require 'bones'
-  Bones.setup
+  require 'docbones'
+  Docbones.setup
 rescue LoadError
   begin
     load 'tasks/setup.rb'

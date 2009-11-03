@@ -54,11 +54,7 @@ class FileManager
   #
   #
   def copy
-    if repository?
-      _checkout(repository)
-    else
       _files_to_copy.each {|fn| _cp(fn)}
-    end
   end
 
   #
@@ -75,30 +71,17 @@ class FileManager
 
   #
   #
-  def _checkout( repotype )
-    case repotype
-    when :git
-      system('git-clone', source, destination)
-      FileUtils.rm_rf(File.join(destination, '.git'))
-    when :svn
-      system('svn', 'export', source, destination)
-    else
-      raise "unknown repository type '#{repotype}'"
-    end
-  end
-
-  #
-  #
   def _rename( filename, name )
     newname = filename.gsub(%r/NAME/, name)
-
     if filename != newname
       raise "cannot rename '#{filename}' to '#{newname}' - file already exists" if test(?e, newname)
       FileUtils.mv(filename, newname)
     end
 
     if test(?d, newname)
-      Dir.glob(File.join(newname, '*')).each {|fn| _rename(fn, name)}
+      Dir.glob(File.join(newname, '*')).each do |fn|
+          _rename(fn, name)
+      end
     end
     newname
   end
