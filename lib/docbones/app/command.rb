@@ -10,7 +10,7 @@ class Command
     @out = out
     @err = err
     @options = {
-      :skeleton_dir =>File.join(mrbones_dir,'data'),
+      :skeleton_dir =>File.join(mrbones_dir,'book'),
       :with_tasks => false,
       :verbose => false,
       :name => nil,
@@ -91,11 +91,11 @@ class Command
     {
       :book => ['-b', '--book', String, 'project of book to create',
           lambda {
-            options[:skeleton] = ::Docbones.path('data/book')
+            options[:skeleton_dir] = ::Docbones.path('data/book')
           }],
       :chapter => ['-c', '--chapter', String, 'project of chapter to create',
           lambda {
-            options[:skeleton] = ::Docbones.path('data/chapter')
+            options[:skeleton_dir] = ::Docbones.path('data/chapter')
           }],
       :skeleton => ['-s', '--skeleton NAME', String,
           'project skeleton to use',
