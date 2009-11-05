@@ -36,7 +36,9 @@ class GemPackageTask < Rake::PackageTask
 
     local_setup = File.join(Dir.pwd, %w[tasks setup.rb])
     if !test(?e, local_setup)
-      Dir.glob(::Docbones.path(%w[lib docbones tasks *])).each {|fn| bones_files << fn}
+      Dir.glob(::Docbones.path(%w[lib docbones tasks *])).each do |fn| 
+      bones_files << fn if fn =~ /(setup.rb)|(notes.rake)$/
+      end
     end
   end
 
@@ -44,6 +46,7 @@ class GemPackageTask < Rake::PackageTask
   # GemPackageTask.  (+define+ is automatically called if a block is
   # given to +new+).
   #
+  
   def define
     super
     task :prereqs

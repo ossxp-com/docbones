@@ -21,7 +21,7 @@ PROJ = OpenStruct.new(
   :email => nil,
   :url => "\000",
   :version => ENV['VERSION'] || '0.0.0',
-  :exclude => %w(tmp$ bak$ ~$ CVS \.svn/ \.git/ ^pkg/),
+  :exclude => %w(tmp$ bak$ ~$ CVS \.svn/ \.git/ \.hg/ ^pkg/),
   :release_name => ENV['RELEASE'],
 
   # System Defaults
@@ -155,10 +155,6 @@ GEM  = "#{RUBY} -S gem"
     Object.instance_eval {const_set "HAVE_#{lib.tr('/','_').upcase}", false}
   end
 end
-HAVE_SVN = (Dir.entries(Dir.pwd).include?('.svn') and
-            system("svn --version 2>&1 > #{DEV_NULL}"))
-HAVE_GIT = (Dir.entries(Dir.pwd).include?('.git') and
-            system("git --version 2>&1 > #{DEV_NULL}"))
 
 # Add docbones as a development dependency
 #
