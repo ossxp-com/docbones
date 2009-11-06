@@ -11,19 +11,3 @@ PROJ.name = '<%= name %>'
 PROJ.authors = 'FIXME (who is writing this software)'
 PROJ.email = 'FIXME (your e-mail)'
 PROJ.url = 'FIXME (project homepage)'
-namespace "db" do
-  desc 'make html'
-  task:html do
-  end
-  desc 'make htmls'
-  task:htmls do
-  end
-  desc 'make pdf'
-  task:pdf do
-  end
-  desc 'make txt'
-  task:txt do
-  end
-  desc 'make all'
-  task:all => [:html,:htmls,:pdf,:txt]
-end

@@ -55,7 +55,6 @@ module Docbones
 
     rakefiles = Dir.glob(File.join(Dir.pwd, %w[tasks *.rake])).sort
     rakefiles.each do |fn|
-       puts fn 
        Rake.application.add_import(fn)
     end
   end
