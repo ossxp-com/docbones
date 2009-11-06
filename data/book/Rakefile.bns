@@ -1,10 +1,16 @@
 
 require 'docbones'
 ::Docbones.setup
+
+ensure_in_path 'lib'
+require '<%= name %>'
+
 task:default do
 end
-task:note do
-end
+PROJ.name = '<%= name %>'
+PROJ.authors = 'FIXME (who is writing this software)'
+PROJ.email = 'FIXME (your e-mail)'
+PROJ.url = 'FIXME (project homepage)'
 namespace "db" do
   desc 'make html'
   task:html do

@@ -23,5 +23,4 @@ namespace :notes do
 end
 
 end  # if HAVE_DOCBONES
-
 # EOF

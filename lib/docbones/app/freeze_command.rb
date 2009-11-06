@@ -48,8 +48,10 @@ class FreezeCommand < Command
          options[:name] = rest.empty? ? 'book' : rest.join('_') 
     elsif args.to_s == '-c'
          options[:name] = rest.empty? ? 'chapter' : rest.join('_') 
-    else  args == nil
+    elsif  args == nil
          options[:name] = 'book'
+    else
+         options[:name] =rest.empty? ? nil : rest.join('_')
     end
     options[:output_dir] = File.join(mrbones_dir, name)
   end

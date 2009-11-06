@@ -67,43 +67,6 @@ PROJ = OpenStruct.new(
     :tags => %w(FIXME OPTIMIZE TODO)
   ),
 
-  # Rcov
-  :rcov => OpenStruct.new(
-    :dir => 'coverage',
-    :opts => %w[--sort coverage -T],
-    :threshold => 90.0,
-    :threshold_exact => false
-  ),
-
-  # Rdoc
-  :rdoc => OpenStruct.new(
-    :opts => [],
-    :include => %w(^lib/ ^bin/ ^ext/ \.txt$ \.rdoc$),
-    :exclude => %w(extconf\.rb$),
-    :main => nil,
-    :dir => 'doc',
-    :remote_dir => nil
-  ),
-
-  # Rubyforge
-  :rubyforge => OpenStruct.new(
-    :name => "\000"
-  ),
-
-  # Rspec
-  :spec => OpenStruct.new(
-    :files => FileList['spec/**/*_spec.rb'],
-    :opts => []
-  ),
-
-  # Subversion Repository
-  :svn => OpenStruct.new(
-    :root => nil,
-    :path => '',
-    :trunk => 'trunk',
-    :tags => 'tags',
-    :branches => 'branches'
-  ),
 
   # Test::Unit
   :test => OpenStruct.new(
@@ -115,9 +78,7 @@ PROJ = OpenStruct.new(
 
 # Load the other rake files in the tasks folder
 tasks_dir = File.expand_path(File.dirname(__FILE__))
-post_load_fn = File.join(tasks_dir, 'post_load.rake')
 rakefiles = Dir.glob(File.join(tasks_dir, '*.rake')).sort
-rakefiles.unshift(rakefiles.delete(post_load_fn)).compact!
 import(*rakefiles)
 
 # Setup the project libraries
@@ -162,35 +123,6 @@ if HAVE_DOCBONES
   PROJ.gem.development_dependencies << ['docbones', ">= #{Docbones::VERSION}"]
 end
 
-# Reads a file at +path+ and spits out an array of the +paragraphs+
-# specified.
-#
-#    changes = paragraphs_of('History.txt', 0..1).join("\n\n")
-#    summary, *description = paragraphs_of('README.txt', 3, 3..8)
-#
-def paragraphs_of( path, *paragraphs )
-  title = String === paragraphs.first ? paragraphs.shift : nil
-  ary = File.read(path).delete("\r").split(/\n\n+/)
-
-  result = if title
-    tmp, matching = [], false
-    rgxp = %r/^=+\s*#{Regexp.escape(title)}/i
-    paragraphs << (0..-1) if paragraphs.empty?
-
-    ary.each do |val|
-      if val =~ rgxp
-        break if matching
-        matching = true
-        rgxp = %r/^=+/i
-      elsif matching
-        tmp << val
-      end
-    end
-    tmp
-  else ary end
-
-  result.values_at(*paragraphs)
-end
 
 # Adds the given gem _name_ to the current project's dependency list. An
 # optional gem _version_ can be given. If omitted, the newest gem version
@@ -275,6 +207,8 @@ def manifest
   files.sort!
 end
 
+
+PROJ.gem.files ||= manifest
 # We need a "valid" method thtat determines if a string is suitable for use
 # in the gem specification.
 #
