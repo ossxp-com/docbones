@@ -31,23 +31,6 @@ PROJ = OpenStruct.new(
   :readme_file => 'README.txt',
   :ignore_file => '.bnsignore',
 
-  # Announce
-  :ann => OpenStruct.new(
-    :file => 'announcement.txt',
-    :text => nil,
-    :paragraphs => [],
-    :email => {
-      :from     => nil,
-      :to       => %w(cuirui@ossxp.com),
-      :server   => 'mail.ossxp.com',
-      :port     => 25,
-      :domain   => ENV['HOSTNAME'],
-      :acct     => nil,
-      :passwd   => nil,
-      :authtype => :plain
-    }
-  ),
-
   # Gem Packaging
   :gem => OpenStruct.new(
     :dependencies => [],
