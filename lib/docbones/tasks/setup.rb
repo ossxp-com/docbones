@@ -12,35 +12,8 @@ class OpenStruct; undef :gem if defined? :gem; end
 # TODO: use the descriptions to output help on the available bones options
 
 PROJ = OpenStruct.new(
-  # Project Defaults
-  :name => nil,
-  :summary => nil,
-  :description => nil,
-  :changes => nil,
-  :authors => nil,
-  :email => nil,
-  :url => "\000",
-  :version => ENV['VERSION'] || '0.0.0',
-  :exclude => %w(tmp$ bak$ ~$ CVS \.hg/ ^pkg/ ^spec/ tasks/),
-  :release_name => ENV['RELEASE'],
-
-  # System Defaults
-  :ruby_opts => %w(-w),
-  :libs => [],
-  :history_file => 'History.txt',
-  :readme_file => 'README.txt',
-  :ignore_file => '.bnsignore',
-
-  # Gem Packaging
   :gem => OpenStruct.new(
-    :dependencies => [],
-    :development_dependencies => [],
-    :executables => nil,
-    :extensions => FileList['ext/**/extconf.rb'],
-    :files => nil,
-    :need_tar => true,
-    :need_zip => false,
-    :extras => {}
+    :files => nil
   ),
 
   # File Annotations
@@ -64,65 +37,6 @@ tasks_dir = File.expand_path(File.dirname(__FILE__))
 rakefiles = Dir.glob(File.join(tasks_dir, '*.rake')).sort
 import(*rakefiles)
 
-# Setup the project libraries
-%w(lib ext).each {|dir| PROJ.libs << dir if test ?d, dir}
-
-# Setup some constants
-DEV_NULL = File.exist?('/dev/null') ? '/dev/null' : 'NUL:'
-
-def quiet( &block )
-  io = [STDOUT.dup, STDERR.dup]
-  STDOUT.reopen DEV_NULL
-  STDERR.reopen DEV_NULL
-  block.call
-ensure
-  STDOUT.reopen io.first
-  STDERR.reopen io.last
-  $stdout, $stderr = STDOUT, STDERR
-end
-
-DIFF = if system("gdiff '#{__FILE__}' '#{__FILE__}' > #{DEV_NULL} 2>&1") then 'gdiff'
-       else 'diff' end unless defined? DIFF
-
-SUDO = if system("which sudo > #{DEV_NULL} 2>&1") then 'sudo'
-       else '' end unless defined? SUDO
-
-RCOV = "#{RUBY} -S rcov"
-RDOC = "#{RUBY} -S rdoc"
-GEM  = "#{RUBY} -S gem"
-
-%w(rcov spec/rake/spectask rubyforge docbones facets/ansicode zentest).each do |lib|
-  begin
-    require lib
-    Object.instance_eval {const_set "HAVE_#{lib.tr('/','_').upcase}", true}
-  rescue LoadError
-    Object.instance_eval {const_set "HAVE_#{lib.tr('/','_').upcase}", false}
-  end
-end
-
-# Add docbones as a development dependency
-#
-if HAVE_DOCBONES
-  PROJ.gem.development_dependencies << ['docbones', ">= #{Docbones::VERSION}"]
-end
-
-
-# Adds the given gem _name_ to the current project's dependency list. An
-# optional gem _version_ can be given. If omitted, the newest gem version
-# will be used.
-#
-def depend_on( name, version = nil )
-  spec = Gem.source_index.find_name(name).last
-  version = spec.version.to_s if version.nil? and !spec.nil?
-
-  PROJ.gem.dependencies << case version
-    when nil; [name]
-    when %r/^\d/; [name, ">= #{version}"]
-    else [name, version] end
-end
-
-# Adds the given arguments to the include path if they are not already there
-#
 def ensure_in_path( *args )
   args.each do |path|
     path = File.expand_path(path)
@@ -130,61 +44,15 @@ def ensure_in_path( *args )
   end
 end
 
-# Find a rake task using the task name and remove any description text. This
-# will prevent the task from being displayed in the list of available tasks.
-#
-def remove_desc_for_task( names )
-  Array(names).each do |task_name|
-    task = Rake.application.tasks.find {|t| t.name == task_name}
-    next if task.nil?
-    task.instance_variable_set :@comment, nil
-  end
-end
-
-# Change working directories to _dir_, call the _block_ of code, and then
-# change back to the original working directory (the current directory when
-# this method was called).
-#
-def in_directory( dir, &block )
-  curdir = pwd
-  begin
-    cd dir
-    return block.call
-  ensure
-    cd curdir
-  end
-end
-
-# Scans the current working directory and creates a list of files that are
 # candidates to be in the manifest.
 #
 def manifest
   files = []
-  exclude = PROJ.exclude.dup
-  comment = %r/^\s*#/
- 
-  # process the ignore file and add the items there to the exclude list
-  if test(?f, PROJ.ignore_file)
-    ary = []
-    File.readlines(PROJ.ignore_file).each do |line|
-      next if line =~ comment
-      line.chomp!
-      line.strip!
-      next if line.nil? or line.empty?
-
-      glob = line =~ %r/\*\./ ? File.join('**', line) : line
-      Dir.glob(glob).each {|fn| ary << "^#{Regexp.escape(fn)}"}
-    end
-    exclude.concat ary
-  end
-
-  # generate a regular expression from the exclude list
-  exclude = Regexp.new(exclude.join('|'))
 
   Find.find '.' do |path|
     path.sub! %r/^(\.\/|\/)/o, ''
     next unless test ?f, path
-    next if path =~ exclude
+    next if path =~ /(\.rb)$/
     files << path
   end
   files.sort!
@@ -192,14 +60,5 @@ end
 
 
 PROJ.gem.files ||= manifest
-# We need a "valid" method thtat determines if a string is suitable for use
-# in the gem specification.
-#
-class Object
-  def valid?
-    return !(self.empty? or self == "\000") if self.respond_to?(:to_str)
-    return false
-  end
-end
 
 # EOF

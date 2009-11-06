@@ -1,5 +1,4 @@
 
-if HAVE_DOCBONES
 
 desc "Enumerate all annotations"
 task :notes do |t|
@@ -8,7 +7,6 @@ task :notes do |t|
   end
   Docbones::AnnotationExtractor.enumerate(
       PROJ, PROJ.notes.tags.join('|'), id, :tag => true)
-end
 end
 
 # EOF
