@@ -74,7 +74,7 @@ class AnnotationExtractor
   # Extract any annotations from the given _file_ using the regular
   # expression _pattern_ provided.
   #
-  def extract_annotations_from( file, pattern )
+  def extract_annotations_from(file, pattern)
     lineno = 0
     result = File.readlines(file).inject([]) do |list, line|
       lineno += 1
