@@ -39,7 +39,6 @@ class GemPackageTask < Rake::PackageTask
       Dir.glob(::Docbones.path(%w[lib docbones tasks *])).each do |fn| 
          bones_files << fn 
       end
-      puts bones_files
     end
   end
 
@@ -73,11 +72,6 @@ class GemPackageTask < Rake::PackageTask
         base_fn = File.join('tasks', File.basename(fn))
         f = File.join(package_dir_path, base_fn)
         fdir = File.dirname(f)
-        puts "+++++++++++++++++++++++++++++++++++"
-        puts "\n"
-        puts fdir
-        puts "\n"
-        puts "-----------------------------------"
         mkdir_p(fdir) if !File.exist?(fdir)
         if File.directory?(fn)
           mkdir_p(f)
