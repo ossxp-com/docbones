@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book  lang="zh-cn">
+    <title></title>
+    <subtitle></subtitle>
+
+    <bookinfo>
+       <edition>第一版</edition>
+       <isbn></isbn>
+       <authorgroup>
+          <author>
+            <firstname></firstname>
+            <surname></surname>
+          </author> 
+       </authorgroup>
+       <editor>
+          <firstname></firstname>
+          <surname></surname>
+       </editor>
+    </bookinfo>
+
+    <preface>
+       <title>序言</title>
+       <para>
+       </para>
+    </preface>
+
+    <chapter>
+       <title></title>
+       <para>
+       </para>
+    </chapter>
+
+</book>

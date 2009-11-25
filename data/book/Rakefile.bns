@@ -2,12 +2,9 @@
 require 'docbones'
 ::Docbones.setup
 
-ensure_in_path 'lib'
-require '<%= name %>'
+PROJ.root= "book"
+PROJ.xml = "<%= name %>"
+PROJ.pkg = "pkg"
 
-task:default do
-end
-PROJ.name = '<%= name %>'
-PROJ.authors = 'FIXME (who is writing this software)'
-PROJ.email = 'FIXME (your e-mail)'
-PROJ.url = 'FIXME (project homepage)'
+task:default 
+
