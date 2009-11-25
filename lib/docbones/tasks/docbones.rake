@@ -16,6 +16,7 @@ namespace:db do
   desc 'make htmls'
   task:htmls do
     sh "#{xsltproc} #{PROJ.pkg}/#{PROJ.xml}/ #{htmlsxsl} #{PROJ.root}/#{PROJ.xml}.xml"
+    `cp -a tools/images #{PROJ.pkg}/#{PROJ.xml}`
   end 
   task:fo do
     sh "#{xsltproc} #{PROJ.pkg}/#{PROJ.xml}.fo #{pdfxsl} #{PROJ.root}/#{PROJ.xml}.xml"
