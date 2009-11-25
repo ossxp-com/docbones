@@ -48,7 +48,7 @@ class CreateCommand < Command
 
     opts.separator ''
     opts.on(*std_opts[:book])
-    opts.on(*std_opts[:chapter])
+    opts.on(*std_opts[:article])
     opts.on(*std_opts[:skeleton])
 
     opts.separator ''

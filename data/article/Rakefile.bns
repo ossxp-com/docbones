@@ -1,0 +1,10 @@
+
+require 'docbones'
+::Docbones.setup
+
+PROJ.root= "article"
+PROJ.xml = "<%= name %>"
+PROJ.pkg = "pkg"
+
+task:default 
+

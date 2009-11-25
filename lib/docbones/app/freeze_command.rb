@@ -33,7 +33,7 @@ class FreezeCommand < Command
 
     opts.separator ''
     opts.on(*std_opts[:book])
-    opts.on(*std_opts[:chapter])
+    opts.on(*std_opts[:article])
 
     opts.separator ''
     opts.separator '  Common Options:'
