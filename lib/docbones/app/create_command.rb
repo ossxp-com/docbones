@@ -29,8 +29,6 @@ class CreateCommand < Command
       if test(?f, File.join(output_dir, 'Rakefile'))
         begin
           FileUtils.cd output_dir
-          @out.puts "Now you need to fix these files"
-          system "#{::Docbones::RUBY} -S rake notes"
         ensure
           FileUtils.cd pwd
         end
@@ -45,21 +43,13 @@ class CreateCommand < Command
 
   def parse( args )
     std_opts = standard_options
-
     opts = OptionParser.new
-    opts.banner = 'Usage: bones create [options] <project_name>'
+    opts.banner = 'Usage: docbones create [options] <project_name>'
 
     opts.separator ''
-    opts.separator "  Create a new project from a Mr Bones project skeleton. The skeleton can"
-    opts.separator "  be the default project skeleton from the Mr Bones gem or one of the named"
-    opts.separator "  skeletons found in the '~/.mrbones/' folder. A git or svn repository can"
-    opts.separator "  be used as the skeleton if the '--repository' flag is given."
-
-    opts.separator ''
-    opts.on(*std_opts[:directory])
+    opts.on(*std_opts[:book])
+    opts.on(*std_opts[:article])
     opts.on(*std_opts[:skeleton])
-    opts.on(*std_opts[:repository])
-    opts.on(*std_opts[:with_tasks])
 
     opts.separator ''
     opts.separator '  Common Options:'

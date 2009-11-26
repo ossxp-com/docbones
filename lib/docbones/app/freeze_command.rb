@@ -8,7 +8,7 @@ class FreezeCommand < Command
     parse args
 
     fm = FileManager.new(
-      :source => repository || ::Docbones.path('data'),
+      :source => skeleton_dir,
       :destination => output_dir,
       :stdout => @out,
       :stderr => @err,
@@ -22,24 +22,18 @@ class FreezeCommand < Command
     copy_tasks(File.join(output_dir, 'tasks')) if with_tasks?
 
     @out.puts "Project skeleton #{name.inspect} " <<
-              "has been frozen to Mr Bones #{::Docbones::VERSION}"
+              "has been frozen to Docbones #{::Docbones::VERSION}"
   end
 
   def parse( args )
     std_opts = standard_options
-
+    
     opts = OptionParser.new
-    opts.banner = 'Usage: bones freeze [options] [skeleton_name]'
+    opts.banner = 'Usage: docbones freeze [options] [skeleton_name]'
 
     opts.separator ''
-    opts.separator '  Freeze the project skeleton to the current Mr Bones project skeleton.'
-    opts.separator '  If a name is not given, then the default name "data" will be used.'
-    opts.separator '  Optionally a git or svn repository can be frozen as the project'
-    opts.separator '  skeleton.'
-
-    opts.separator ''
-    opts.on(*std_opts[:repository])
-    opts.on(*std_opts[:with_tasks])
+    opts.on(*std_opts[:book])
+    opts.on(*std_opts[:article])
 
     opts.separator ''
     opts.separator '  Common Options:'
@@ -48,9 +42,17 @@ class FreezeCommand < Command
       exit
     }
 
-    # parse the command line arguments
-    opts.parse! args
-    options[:name] = args.empty? ? 'data' : args.join('_')
+    # parse the command line argument
+    rest = opts.parse args
+    if args.to_s == '-b'
+         options[:name] = rest.empty? ? 'book' : rest.join('_') 
+    elsif args.to_s == '-a'
+         options[:name] = rest.empty? ? 'article' : rest.join('_') 
+    elsif  args == nil
+         options[:name] = 'book'
+    else
+         options[:name] =rest.empty? ? nil : rest.join('_')
+    end
     options[:output_dir] = File.join(mrbones_dir, name)
   end
 

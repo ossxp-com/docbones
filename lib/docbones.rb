@@ -54,7 +54,9 @@ module Docbones
     load docbones_setup
 
     rakefiles = Dir.glob(File.join(Dir.pwd, %w[tasks *.rake])).sort
-    rakefiles.each {|fn| Rake.application.add_import(fn)}
+    rakefiles.each do |fn|
+       Rake.application.add_import(fn)
+    end
   end
 
   # TODO: fix file lists for Test::Unit and RSpec
@@ -64,5 +66,4 @@ module Docbones
 end  # module Docbones
 
 Docbones.require_all_libs_relative_to(__FILE__)
-
 # EOF

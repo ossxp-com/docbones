@@ -10,13 +10,13 @@ class Command
     @out = out
     @err = err
     @options = {
-      :skeleton_dir => File.join(mrbones_dir, 'data'),
+      :skeleton_dir =>File.join(mrbones_dir,'book'),
       :with_tasks => false,
       :verbose => false,
       :name => nil,
       :output_dir => nil
     }
-    @options[:skeleton_dir] = ::Docbones.path('data') unless test(?d, skeleton_dir)
+    @options[:skeleton_dir] = ::Docbones.path('data/book') unless test(?d, skeleton_dir)
   end
 
   def run( args )
@@ -89,14 +89,13 @@ class Command
   #
   def standard_options
     {
-      :verbose => ['-v', '--verbose', 'enable verbose output',
+      :book => ['-b', '--book', String, 'project of book to create',
           lambda {
-            options[:verbose] = true
+            options[:skeleton_dir] = ::Docbones.path('data/book')
           }],
-      :directory => ['-d', '--directory DIRECTORY', String,
-          'project directory to create', '(defaults to project_name)',
-          lambda { |value|
-            options[:output_dir] = value
+      :article => ['-a', '--article', String, 'project of article to create',
+          lambda {
+            options[:skeleton_dir] = ::Docbones.path('data/article')
           }],
       :skeleton => ['-s', '--skeleton NAME', String,
           'project skeleton to use',
@@ -109,15 +108,6 @@ class Command
             else
               raise ArgumentError, "Unknown skeleton '#{value}'"
             end
-          }],
-      :with_tasks => ['--with-tasks', 'copy rake tasks to the project folder',
-          lambda {
-            options[:with_tasks] = true
-          }],
-      :repository => ['-r', '--repository URL', String,
-          'svn or git repository path', 
-          lambda { |value|
-            options[:repository] = value
           }]
     }
   end

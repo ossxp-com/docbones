@@ -1,20 +1,32 @@
-
-if HAVE_BONES
-
-namespace :docbones do
-
-  desc 'Show the PROJ open struct'
-  task :debug do |t|
-    atr = if t.application.top_level_tasks.length == 2
-      t.application.top_level_tasks.pop
-    end
-
-    if atr then Docbones::Debug.show_attr(PROJ, atr)
-    else Docbones::Debug.show PROJ end
+namespace:db do
+  xsltproc = "xsltproc -o"
+  htmlxsl = "tools/html-stylesheet.xsl"
+  htmlsxsl = "tools/chunk-stylesheet.xsl"
+  pdfxsl = "tools/fo-stylesheet.xsl"
+  desc 'make all'
+  task:all => [:html,:htmls,:pdf]
+  desc 'clean'
+  task:clean do
+    `rm -rf #{PROJ.pkg}`
   end
-
-end  # namespace :docbones
-
-end  # HAVE_BONES
-
-# EOF
+  desc 'make html'
+  task:html do
+    sh "#{xsltproc} #{PROJ.pkg}/#{PROJ.xml}.html #{htmlxsl} #{PROJ.root}/#{PROJ.xml}.xml"
+  end
+  desc 'make htmls'
+  task:htmls do
+    sh "#{xsltproc} #{PROJ.pkg}/#{PROJ.xml}/ #{htmlsxsl} #{PROJ.root}/#{PROJ.xml}.xml"
+    `cp -a tools/images #{PROJ.pkg}/#{PROJ.xml}`
+  end 
+  task:fo do
+    sh "#{xsltproc} #{PROJ.pkg}/#{PROJ.xml}.fo #{pdfxsl} #{PROJ.root}/#{PROJ.xml}.xml"
+  end
+  desc 'make pdf'
+  task:pdf => [:fo] do
+    sh "fop -c /etc/fop/fop.xconf #{PROJ.pkg}/#{PROJ.xml}.fo #{PROJ.pkg}/#{PROJ.xml}.pdf"
+  end
+  desc 'make mm'
+  task:mm do
+    sh 'sl'
+  end
+end
