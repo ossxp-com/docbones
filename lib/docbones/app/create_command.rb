@@ -29,8 +29,6 @@ class CreateCommand < Command
       if test(?f, File.join(output_dir, 'Rakefile'))
         begin
           FileUtils.cd output_dir
-          @out.puts "Now you need to fix these files"
-          system "#{::Docbones::RUBY} -S rake notes"
         ensure
           FileUtils.cd pwd
         end
@@ -50,7 +48,7 @@ class CreateCommand < Command
 
     opts.separator ''
     opts.on(*std_opts[:book])
-    opts.on(*std_opts[:chapter])
+    opts.on(*std_opts[:article])
     opts.on(*std_opts[:skeleton])
 
     opts.separator ''

@@ -93,9 +93,9 @@ class Command
           lambda {
             options[:skeleton_dir] = ::Docbones.path('data/book')
           }],
-      :chapter => ['-c', '--chapter', String, 'project of chapter to create',
+      :article => ['-a', '--article', String, 'project of article to create',
           lambda {
-            options[:skeleton_dir] = ::Docbones.path('data/chapter')
+            options[:skeleton_dir] = ::Docbones.path('data/article')
           }],
       :skeleton => ['-s', '--skeleton NAME', String,
           'project skeleton to use',

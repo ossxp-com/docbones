@@ -33,7 +33,7 @@ class FreezeCommand < Command
 
     opts.separator ''
     opts.on(*std_opts[:book])
-    opts.on(*std_opts[:chapter])
+    opts.on(*std_opts[:article])
 
     opts.separator ''
     opts.separator '  Common Options:'
@@ -46,8 +46,8 @@ class FreezeCommand < Command
     rest = opts.parse args
     if args.to_s == '-b'
          options[:name] = rest.empty? ? 'book' : rest.join('_') 
-    elsif args.to_s == '-c'
-         options[:name] = rest.empty? ? 'chapter' : rest.join('_') 
+    elsif args.to_s == '-a'
+         options[:name] = rest.empty? ? 'article' : rest.join('_') 
     elsif  args == nil
          options[:name] = 'book'
     else

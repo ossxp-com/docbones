@@ -21,10 +21,10 @@ class InfoCommand < Command
 
       if test(?f, fn)
         msg << fmt % [File.basename(fn), File.read(fn).strip]
-      elsif test(?e, File.join(fn,'book.rb'))
+      elsif test(?e, File.join(fn,'book'))
         msg << "   " << File.basename(fn) <<"----------"<<'book' << "\n"
-      elsif test(?e, File.join(fn,'chapter.rb'))
-        msg << "   " << File.basename(fn) <<"----------"<<'chapter'<<"\n"
+      elsif test(?e, File.join(fn,'article'))
+        msg << "   " << File.basename(fn) <<"----------"<<'article'<<"\n"
       end
     end
 

@@ -2,7 +2,7 @@
 require 'docbones'
 ::Docbones.setup
 
-PROJ.root= "book"
+PROJ.root= "article"
 PROJ.xml = "<%= name %>"
 PROJ.pkg = "pkg"
 
