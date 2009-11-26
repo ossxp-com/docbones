@@ -55,7 +55,7 @@ class FileManager
   #
   def copy
       _files_to_copy.each {|fn| _cp(fn)}
-      _tools_to_copy
+      _tools_to_copy unless source =~ /.mrdocbones/
   end
 
   #
