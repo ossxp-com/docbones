@@ -47,8 +47,8 @@ class CreateCommand < Command
     opts.banner = 'Usage: docbones create [options] <project_name>'
 
     opts.separator ''
-    opts.on(*std_opts[:book])
-    opts.on(*std_opts[:article])
+    opts.on(*std_opts[:type])
+    opts.on(*std_opts[:name])
     opts.on(*std_opts[:skeleton])
 
     opts.separator ''

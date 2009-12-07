@@ -14,10 +14,10 @@ class Command
       :with_tasks => false,
       :verbose => false,
       :name => nil,
-      :output_dir => nil
+      :output_dir => nil,
       :index_name => nil
     }
-    @options[:skeleton_dir] = ::Docbones.path('data/book') unless test(?d, skeleton_dir)
+    @options[:skeleton_dir] = ::Docbones.path('data/rest') unless test(?d, skeleton_dir)
   end
 
   def run( args )
@@ -40,6 +40,10 @@ class Command
   #
   def name
     options[:name]
+  end
+
+  def index_name
+    options[:index_name]
   end
 
   # A git or svn repository URL from the command line.
@@ -90,8 +94,8 @@ class Command
   #
   def standard_options
     {
-      :type => ['-t', '--type', String, '',
-          lambda {
+      :type => ['-t', '--type NAME', String, '',
+          lambda { |value|
             if value =~ /(db)|(docbook)/
                options[:skeleton_dir] = ::Docbones.path('data/db')
             elsif value  =~ /(rst)|(rest)|(reStructuredText)|(reST)/
@@ -107,8 +111,8 @@ class Command
                options[:index_name] = typeArray.last.sub('.rst','')
             end
           }],
-      :name => ['-n', '--name', String, '',
-          lambda {
+      :name => ['-n', '--name NAME', String, '',
+          lambda { |value|
             options[:index_name] = value
           }],
       :skeleton => ['-s', '--skeleton NAME', String,
