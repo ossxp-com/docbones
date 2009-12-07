@@ -15,6 +15,7 @@ class Command
       :verbose => false,
       :name => nil,
       :output_dir => nil
+      :index_name => nil
     }
     @options[:skeleton_dir] = ::Docbones.path('data/book') unless test(?d, skeleton_dir)
   end
@@ -89,13 +90,26 @@ class Command
   #
   def standard_options
     {
-      :book => ['-b', '--book', String, 'project of book to create',
+      :type => ['-t', '--type', String, '',
           lambda {
-            options[:skeleton_dir] = ::Docbones.path('data/book')
+            if value =~ /(db)|(docbook)/
+               options[:skeleton_dir] = ::Docbones.path('data/db')
+            elsif value  =~ /(rst)|(rest)|(reStructuredText)|(reST)/
+               options[:skeleton_dir] = ::Docbones.path('data/rest')
+            else
+               puts "请输入正确的格式"
+            end
+            typeArray = value.split('/')
+            if typeArray.last =~ /\.xml$/
+               options[:index_name] = typeArray.last.sub('.xml','')
+            end
+            if typeArray.last =~ /\.rst$/
+               options[:index_name] = typeArray.last.sub('.rst','')
+            end
           }],
-      :article => ['-a', '--article', String, 'project of article to create',
+      :name => ['-n', '--name', String, '',
           lambda {
-            options[:skeleton_dir] = ::Docbones.path('data/article')
+            options[:index_name] = value
           }],
       :skeleton => ['-s', '--skeleton NAME', String,
           'project skeleton to use',
