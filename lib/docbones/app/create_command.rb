@@ -19,7 +19,9 @@ class CreateCommand < Command
     begin
       fm.copy
       copy_tasks(File.join(output_dir, 'tasks')) if with_tasks?
-      fm.finalize name
+      options[:index_name] = name if index_name.nil?
+      puts index_name
+      fm.finalize index_name
 
       pwd = File.expand_path(FileUtils.pwd)
       msg = "Created '#{name}'"

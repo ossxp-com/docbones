@@ -10,7 +10,7 @@ class Command
     @out = out
     @err = err
     @options = {
-      :skeleton_dir =>File.join(mrbones_dir,'book'),
+      :skeleton_dir =>File.join(mrbones_dir,'db'),
       :with_tasks => false,
       :verbose => false,
       :name => nil,

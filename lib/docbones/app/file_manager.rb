@@ -55,12 +55,12 @@ class FileManager
   #
   def copy
       _files_to_copy.each {|fn| _cp(fn)}
-      _tools_to_copy unless source =~ /.mrdocbones/
   end
 
   #
   #
   def finalize( name )
+    puts name
     name = name.to_s
     return if name.empty?
 
@@ -119,30 +119,6 @@ class FileManager
 
   # Returns a list of the files to copy from the source directory to
   # the destination directory.
-  #
-  def _tools_to_copy
-    tools = source.sub(/(book)|(article)$/,"tools")
-    rgxp = %r/\A#{tools}\/?/
-    ary = Dir.glob(File.join(tools, '**', '*'), File::FNM_DOTMATCH).map do |filename|
-      next if test(?d,filename)
-      filename.sub rgxp,''
-    end  
-    ary.compact!
-    ary.sort!
-    def _cp(tools,file)
-      dir = File.dirname(file)
-      dir = (dir == '.' ? destination+"/tools" : File.join(destination+"/tools", dir))
-      dst = File.join(dir,  File.basename(file))
-      src = File.join(tools, file)
-      @out.puts(test(?e, dst) ? "updating #{dst}" : "creating #{dst}") if verbose?
-      FileUtils.mkdir_p(dir)
-      FileUtils.cp src, dst
-      FileUtils.chmod(File.stat(src).mode, dst)
-    end
-    
-    ary.each {|file| _cp(tools,file)}
-
-  end
 
   def _files_to_copy
     rgxp = %r/\A#{source}\/?/
