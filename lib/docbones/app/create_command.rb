@@ -20,7 +20,6 @@ class CreateCommand < Command
       fm.copy
       copy_tasks(File.join(output_dir, 'tasks')) if with_tasks?
       options[:index_name] = name if index_name.nil?
-      puts index_name
       fm.finalize index_name
 
       pwd = File.expand_path(FileUtils.pwd)
@@ -62,8 +61,17 @@ class CreateCommand < Command
 
     # parse the command line arguments
     opts.parse! args
-    options[:name] = args.empty? ? nil : args.join('_')
-
+    args_names = (args.to_s.include? '/') ? args.to_s.split('/') : []
+    last_name = args_names.last
+    if args_names.size >1 && last_name =~ /(\.rst$)|(\.xml)/
+        options[:skeleton_dir] = ::Docbones.path('data/rest') if last_name =~ /\.rst/
+        options[:skeleton_dir] = ::Docbones.path('data/db') if last_name =~ /\.xml/
+        options[:index_name] = last_name.sub(/(\.rst$)|(\.xml)/,'')
+        args_names.delete_at(args_names.size-1)
+        options[:name] = args_names.join('/')
+    else
+        options[:name] = args.empty? ? nil : args.join('_')
+    end
     if name.nil?
       @out.puts opts
       exit 1

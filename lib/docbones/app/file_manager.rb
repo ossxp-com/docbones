@@ -60,7 +60,6 @@ class FileManager
   #
   #
   def finalize( name )
-    puts name
     name = name.to_s
     return if name.empty?
 
