@@ -53,8 +53,8 @@ class FileManager
 
   #
   #
-  def copy
-      _files_to_copy.each {|fn| _cp(fn)}
+  def copy index_name,name,source_suffix
+      _files_to_copy(index_name,name,source_suffix).each {|fn| _cp(fn)}
   end
 
   #
@@ -119,13 +119,17 @@ class FileManager
   # Returns a list of the files to copy from the source directory to
   # the destination directory.
 
-  def _files_to_copy
+  def _files_to_copy(index_name,name,source_suffix)
     rgxp = %r/\A#{source}\/?/
     exclude = %r/tmp$|bak$|~$|CVS|\.svn/
-
+    index_suffix = source_suffix.nil? ? nil : index_name.strip+source_suffix.strip
+    index_name_pwd = index_suffix.nil? ? '' : File.expand_path(File.join(name,index_suffix)) 
     ary = Dir.glob(File.join(source, '**', '*'), File::FNM_DOTMATCH).map do |filename|
       next if exclude =~ filename
       next if test(?d, filename)
+      if test(?e,index_name_pwd) 
+        next if  /#{source_suffix.strip}/ =~ filename.to_s
+      end
       filename.sub rgxp, ''
     end
     ary.compact!
@@ -143,10 +147,9 @@ class FileManager
     dir = (dir == '.' ? destination : File.join(destination, dir))
     dst = File.join(dir,  File.basename(file))
     src = File.join(source, file)
-
     @out.puts(test(?e, dst) ? "updating #{dst}" : "creating #{dst}") if verbose?
     FileUtils.mkdir_p(dir)
-    FileUtils.cp src, dst
+    FileUtils.cp(src, dst)
     FileUtils.chmod(File.stat(src).mode, dst)
   end
 

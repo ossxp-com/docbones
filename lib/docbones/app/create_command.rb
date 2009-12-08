@@ -14,10 +14,10 @@ class CreateCommand < Command
       :stderr => @err,
       :verbose => verbose?
     )
-    raise "Output directory already exists #{output_dir.inspect}" if test(?e, fm.destination)
+    #raise "Output directory already exists #{output_dir.inspect}" if test(?e, fm.destination)
 
     begin
-      fm.copy
+      fm.copy index_name,name,source_suffix
       copy_tasks(File.join(output_dir, 'tasks')) if with_tasks?
       options[:index_name] = name if index_name.nil?
       fm.finalize index_name
@@ -61,16 +61,22 @@ class CreateCommand < Command
 
     # parse the command line arguments
     opts.parse! args
-    args_names = (args.to_s.include? '/') ? args.to_s.split('/') : []
+    args_names = (args.to_s.include?('/')) ? args.to_s.split('/') : []
     last_name = args_names.last
-    if args_names.size >1 && last_name =~ /(\.rst$)|(\.xml)/
-        options[:skeleton_dir] = ::Docbones.path('data/rest') if last_name =~ /\.rst/
-        options[:skeleton_dir] = ::Docbones.path('data/db') if last_name =~ /\.xml/
+    if args_names.size >1
+        if last_name =~ /\.rst/
+           options[:skeleton_dir] = ::Docbones.path('data/rest')
+           options[:source_suffix] = '.rst' if source_suffix.nil?
+        end
+        if last_name =~ /\.xml/
+           options[:skeleton_dir] = ::Docbones.path('data/db')
+           options[:source_suffix] = '.xml' if source_suffix.nil?
+        end
         options[:index_name] = last_name.sub(/(\.rst$)|(\.xml)/,'')
         args_names.delete_at(args_names.size-1)
         options[:name] = args_names.join('/')
     else
-        options[:name] = args.empty? ? nil : args.join('_')
+        options[:name] = args.empty? ? nil : args.join('_') 
     end
     if name.nil?
       @out.puts opts

@@ -6,25 +6,18 @@ class InfoCommand < Command
 
   def run( args )
     parse args
-
-    skeleton_dir = File.join(mrbones_dir,'book')
-    skeleton_dir = ::Docbones.path('data/book') unless test(?d, skeleton_dir)
-
     msg  = "\n"
-    msg << "The default project skeleton will be copied from:\n"
-    msg << "    " << skeleton_dir << "\n\n"
 
     fmt = "    %-12s => %s\n"
     msg << "Available projects skeletons are:\n"
     Dir.glob(File.join(mrbones_dir, '*')).sort.each do |fn|
       next if fn =~ %r/\.archive$/
-
       if test(?f, fn)
         msg << fmt % [File.basename(fn), File.read(fn).strip]
-      elsif test(?e, File.join(fn,'book'))
-        msg << "   " << File.basename(fn) <<"----------"<<'book' << "\n"
-      elsif test(?e, File.join(fn,'article'))
-        msg << "   " << File.basename(fn) <<"----------"<<'article'<<"\n"
+      elsif test(?e, File.join(fn,'NAME.xml.bns'))
+        msg << "   " << File.basename(fn) <<"----------"<<'docbook' << "\n"
+      elsif test(?e, File.join(fn,'NAME.rst.bns'))
+        msg << "   " << File.basename(fn) <<"----------"<<'reST'<<"\n"
       end
     end
 

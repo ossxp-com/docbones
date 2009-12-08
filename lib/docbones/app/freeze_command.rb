@@ -18,7 +18,7 @@ class FreezeCommand < Command
     fm.archive_destination
     return freeze_to_repository if repository
 
-    fm.copy
+    fm.copy index_name,name,source_suffix
     copy_tasks(File.join(output_dir, 'tasks')) if with_tasks?
 
     @out.puts "Project skeleton #{name.inspect} " <<
@@ -32,8 +32,7 @@ class FreezeCommand < Command
     opts.banner = 'Usage: docbones freeze [options] [skeleton_name]'
 
     opts.separator ''
-    opts.on(*std_opts[:book])
-    opts.on(*std_opts[:article])
+    opts.on(*std_opts[:type])
 
     opts.separator ''
     opts.separator '  Common Options:'
@@ -43,16 +42,10 @@ class FreezeCommand < Command
     }
 
     # parse the command line argument
-    rest = opts.parse args
-    if args.to_s == '-b'
-         options[:name] = rest.empty? ? 'book' : rest.join('_') 
-    elsif args.to_s == '-a'
-         options[:name] = rest.empty? ? 'article' : rest.join('_') 
-    elsif  args == nil
-         options[:name] = 'book'
-    else
-         options[:name] =rest.empty? ? nil : rest.join('_')
-    end
+    opts.parse! args
+    options[:name] =args.empty? ? nil : args.join('_')
+    options[:source_suffix] = nil
+    options[:index_name] = nil
     options[:output_dir] = File.join(mrbones_dir, name)
   end
 

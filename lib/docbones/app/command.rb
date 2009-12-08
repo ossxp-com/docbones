@@ -15,7 +15,8 @@ class Command
       :verbose => false,
       :name => nil,
       :output_dir => nil,
-      :index_name => nil
+      :index_name => nil,
+      :source_suffix => nil
     }
     @options[:skeleton_dir] = ::Docbones.path('data/rest') unless test(?d, skeleton_dir)
   end
@@ -26,6 +27,9 @@ class Command
 
   # The output directory where files will be written.
   #
+  def source_suffix
+    options[:source_suffix]
+  end
   def output_dir
     options[:output_dir]
   end
@@ -98,17 +102,12 @@ class Command
           lambda { |value|
             if value =~ /(db)|(docbook)/
                options[:skeleton_dir] = ::Docbones.path('data/db')
+               options[:source_suffix] = '.xml'
             elsif value  =~ /(rst)|(rest)|(reStructuredText)|(reST)/
                options[:skeleton_dir] = ::Docbones.path('data/rest')
+               options[:source_suffix] = '.rst'
             else
                puts "请输入正确的格式"
-            end
-            typeArray = value.split('/')
-            if typeArray.last =~ /\.xml$/
-               options[:index_name] = typeArray.last.sub('.xml','')
-            end
-            if typeArray.last =~ /\.rst$/
-               options[:index_name] = typeArray.last.sub('.rst','')
             end
           }],
       :name => ['-n', '--name NAME', String, '',
