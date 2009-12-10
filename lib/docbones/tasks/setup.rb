@@ -11,14 +11,25 @@ class OpenStruct; undef :gem if defined? :gem; end
 # TODO: use the descriptions to output help on the available bones options
 
 PROJ = OpenStruct.new(
-  :pkg => "pkg",
+  :output => "output",
   :root => nil,
-  :xml => nil
+  :source => nil
 )
 
 # Load the other rake files in the tasks folder
-tasks_dir = File.expand_path(File.dirname(__FILE__))
-rakefiles = Dir.glob(File.join(tasks_dir, '*.rake')).sort
-import(*rakefiles)
+
+class DocbonesSetup
+  def setup source_suffix
+     tasks_dir = File.expand_path(File.dirname(__FILE__))
+     if source_suffix =~ /\.xml/
+        rakefiles = Dir.glob(File.join(tasks_dir, 'docbook.rake')).sort
+     elsif source_suffix =~ /\.rst/
+        rakefiles = Dir.glob(File.join(tasks_dir, 'rst.rake')).sort
+     else
+        rakefiles = Dir.glob(File.join(tasks_dir,'*.rake')).sort
+     end
+     import(*rakefiles)
+  end
+end
 
 # EOF

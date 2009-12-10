@@ -42,7 +42,7 @@ module Docbones
   #    Docbones.setup
  
   #
-  def self.setup
+  def self.setup source_suffix=nil
     local_setup = File.join(Dir.pwd, %w[tasks setup.rb])
 
     if test(?e, local_setup)
@@ -52,11 +52,7 @@ module Docbones
 
     docbones_setup = ::Docbones.path %w[lib docbones tasks setup.rb]
     load docbones_setup
-
-    rakefiles = Dir.glob(File.join(Dir.pwd, %w[tasks *.rake])).sort
-    rakefiles.each do |fn|
-       Rake.application.add_import(fn)
-    end
+    DocbonesSetup.new().setup source_suffix  
   end
 
   # TODO: fix file lists for Test::Unit and RSpec
