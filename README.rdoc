@@ -4,15 +4,15 @@ Mr  Docbones
 
 == DESCRIPTION:
 
-Mr Bones is a handy tool that builds a skeleton for your new Ruby projects.
+Mr Docbones is a handy tool that builds a skeleton for your new Ruby projects.
 The skeleton contains some starter code and a collection of rake tasks to
-ease the management and deployment of your source code. Mr Bones is not
+ease the management and deployment of your source code. Mr Docbones is not
 viral -- all the code your project needs is included in the skeleton (no
 gem dependency required).
 
 == FEATURES:
 
-Mr Bones provides the following rake tasks:
+Mr Docbones provides the following rake tasks:
 
   ann               # Alias to ann:announcement
   ann:announcement  # Create an announcement file
