@@ -59,12 +59,13 @@ class FileManager
 
   #
   #
-  def finalize( name )
+  def finalize(index_name,name)
     name = name.to_s
     return if name.empty?
+    index_name = name if index_name.empty?
 
-    self.destination = _rename(destination, name)
-    _erb(name)
+    self.destination = _rename(destination, index_name)
+    _erb(index_name,name)
 
     self
   end
@@ -88,9 +89,8 @@ class FileManager
 
   #
   #
-  def _erb( name )
-    binding = _erb_binding(name)
-
+  def _erb(index_name,name)
+    #binding = _erb_binding(name)
     Dir.glob(File.join(destination, '**', '*')).each do |fn|
       next unless test(?f, fn) and '.bns' == File.extname(fn)
 

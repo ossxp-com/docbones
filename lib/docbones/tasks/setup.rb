@@ -13,7 +13,8 @@ class OpenStruct; undef :gem if defined? :gem; end
 PROJ = OpenStruct.new(
   :output => "output",
   :root => nil,
-  :source => nil
+  :index => nil,
+  :name => nil
 )
 
 # Load the other rake files in the tasks folder

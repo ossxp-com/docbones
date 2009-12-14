@@ -31,7 +31,7 @@ def last_modify version_control
   last_my
 end
 
-  desc "source and output info"
+  desc "index and output info"
   task:info => [:html,:htmls,:pdf] do
      version_control = nil
      version_control_array.each do |vc|
@@ -42,25 +42,25 @@ end
      end
      puts last_modify version_control
      puts     
-     puts "html url======>#{PROJ.output}/#{PROJ.source}.html"
+     puts "html url======>#{PROJ.output}/#{PROJ.index}.html"
      puts 
-     puts "htmls url ======>#{PROJ.output}/#{PROJ.source}"
+     puts "htmls url ======>#{PROJ.output}/#{PROJ.index}"
      puts
-     puts "pdf url ======>#{PROJ.output}/#{PROJ.source}.pdf"   
+     puts "pdf url ======>#{PROJ.output}/#{PROJ.index}.pdf"   
   end
 
   desc 'make all'
   file 'all' => [:html,:htmls,:pdf]
 
   task:xsltproc do
-    if test(?d,"/usr/bin/xsltproc")
+    if !test(?e,"/usr/bin/xsltproc")
        puts "uninstall xsltproc,please:"
        puts "sudo aptitude install xsltproc"
        exit 1
     end
   end
   task:fop do
-    if test(?d,"/usr/bin/fop")
+    if !test(?e,"/usr/bin/fop")
        puts "uninstall fop,please:"
        puts "sudo aptitude install fop"
        exit 1
@@ -69,18 +69,18 @@ end
 
   desc 'make html'
   task:html => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.source}.html #{HXSL} #{PROJ.root}/#{PROJ.source}.xml"
+    sh "#{XPC} #{PROJ.output}/#{PROJ.index}.html #{HXSL} #{PROJ.root}/#{PROJ.index}.xml"
   end
   desc 'make htmls'
   task:htmls => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.source}/ #{HSXSL} #{PROJ.root}/#{PROJ.source}.xml"
-    `cp -a tools/images #{PROJ.output}/#{PROJ.source}`
+    sh "#{XPC} #{PROJ.output}/#{PROJ.name}/ #{HSXSL} #{PROJ.root}/#{PROJ.index}.xml"
+    `cp -a tools/images #{PROJ.output}/#{PROJ.name}`
   end 
   task:fo => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.source}.fo #{PXSL} #{PROJ.root}/#{PROJ.source}.xml"
+    sh "#{XPC} #{PROJ.output}/#{PROJ.index}.fo #{PXSL} #{PROJ.root}/#{PROJ.index}.xml"
   end
   desc 'make pdf'
   task:pdf => [:fo,:fop] do
-    sh "fop -c /etc/fop/fop.xconf #{PROJ.output}/#{PROJ.source}.fo #{PROJ.output}/#{PROJ.source}.pdf"
+    sh "fop -c /etc/fop/fop.xconf #{PROJ.output}/#{PROJ.index}.fo #{PROJ.output}/#{PROJ.index}.pdf"
   end
 end
