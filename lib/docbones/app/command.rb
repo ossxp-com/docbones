@@ -106,9 +106,6 @@ class Command
             elsif value  =~ /(rst)|(rest)|(reStructuredText)|(reST)/i
                options[:skeleton_dir] = ::Docbones.path('data/rest')
                options[:source_suffix] = '.rst'
-            elsif value  =~ /(mm)|(freemind)|(free)/i
-               options[:skeleton_dir] = ::Docbones.path('data/mm')
-               options[:source_suffix] = '.mm'
             else
                puts "请输入正确的格式"
             end

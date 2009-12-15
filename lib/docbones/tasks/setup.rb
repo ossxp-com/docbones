@@ -24,10 +24,9 @@ class DocbonesSetup
      tasks_dir = File.expand_path(File.dirname(__FILE__))
      if source_suffix =~ /\.xml/
         rakefiles = Dir.glob(File.join(tasks_dir, 'docbook.rake')).sort
+        rakefiles << File.join(tasks_dir,'mm.rake')
      elsif source_suffix =~ /\.rst/
         rakefiles = Dir.glob(File.join(tasks_dir, 'rst.rake')).sort
-     elsif source_suffix =~ /\.mm/
-        rakefiles = Dir.glob(File.join(tasks_dir,'mm.rake')).sort
      end
      import(*rakefiles)
   end

@@ -1,19 +1,29 @@
 desc 'clean the output/*'
-task:clean do
-  `rm -rf #{PROJ.output}/* 2>/dev/null`
-  puts "rm -rf #{PROJ.output}/*"
+
+XPC ||= "xsltproc -o"
+XSL = "tools/freemind2html.xsl" 
+MMs = Dir.glob(File.join(Dir.pwd,"*.mm")).map do |mm|
+   mm.sub Dir.pwd.to_s.strip+'/',""
 end
-namespace:mm do
-XPC = "xsltproc -o"
-XSL = "freemind2html.xsl" 
-MM = PROJ.root+'/'+PROJ.index+'.mm'
-HTML = PROJ.output+'/'+PROJ.index+'.html'
-X = PROJ.output+'/x'
-  desc 'rake html'
-  task:html => [HTML]
-  file HTML => [MM] do
-     sh "#{XPC} #{HTML} #{XSL} #{MM}"
-     `cp #{MM} #{PROJ.output}/xs.mm`
-  end 
+HTMLs = MMs.map {|m| m.sub('.mm','.html').strip }
+X = PROJ.output
+string_param = "--stringparam freemind_src"
+if MMs.empty?
+
+else
+  namespace:mm do
+   desc 'rake html'
+   task:html => [X]
+   task:html => HTMLs
+   file X do
+     `mkdir output`
+   end
+     rule '.html' => '.mm' do |t|
+       mm_name ="ht_"+t.source
+       sh "#{XPC} #{t.name} #{string_param} #{mm_name} #{XSL} #{t.source}"
+       `mv #{t.name} #{X}/mm_#{t.name} `
+       `cp #{t.source} #{X}/#{mm_name}`      
+     end
+   end
 end
 

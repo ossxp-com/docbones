@@ -1,7 +1,8 @@
 
 require 'docbones'
+mm_files = 'yes'
 source_suffix = '.xml'
-::Docbones.setup source_suffix
+::Docbones.setup source_suffix,mm_files
 
 PROJ.root= "."
 PROJ.name = "<%= name%>"

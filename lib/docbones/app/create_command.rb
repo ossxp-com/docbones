@@ -72,11 +72,7 @@ class CreateCommand < Command
            options[:skeleton_dir] = ::Docbones.path('data/db')
            options[:source_suffix] = '.xml' if source_suffix.nil?
         end
-        if last_name =~ /\.mm/
-           options[:skeleton_dir] = ::Docbones.path('data/mm')
-           options[:source_suffix] = '.mm' if source_suffix.nil?
-        end
-        options[:index_name] = last_name.sub(/(\.rst$)|(\.xml)|(\.mm)/,'')
+        options[:index_name] = last_name.sub(/(\.rst$)|(\.xml)/,'')
         args_names.delete_at(args_names.size-1)
         options[:name] = args_names.join('/')
     else
