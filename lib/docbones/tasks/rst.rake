@@ -4,7 +4,12 @@ task:clean do
   puts "rm -rf #{PROJ.output}/*"
 end 
 namespace:rst do
-   
+  
+RST = PROJ.root+"/"+PROJ.index+".rst" 
+HTML = PROJ.output+"/"+PROJ.index+".html"
+PDF = PROJ.output+"/"+PROJ.index+".pdf"
+ODT = PROJ.output+"/"+PROJ.index+".odf"
+OUTPUT = PROJ.output
   task:rst2html do
     a = `which rst2html`.chomp
     if a == ''
@@ -21,31 +26,33 @@ namespace:rst do
     end
   end
 
-  file 'output' do
-     `mkdir #{PROJ.output}`
+  file [OUTPUT] do
+     `mkdir #{OUTPUT}`
   end
   
   desc 'rake all'
   file 'all' => ['html','pdf','odt']
   
   desc 'rake html'
-  task:html => [:rst2html,:output] do
-    sh "rst2html #{PROJ.root}/#{PROJ.source}.rst > #{PROJ.output}/#{PROJ.source}.html"
+  task:html => [:rst2html,:output,HTML]
+  file HTML => [RST] do
+    sh "rst2html #{RST} > #{HTML}"
   end
    
   path= File.join(File.expand_path(File.dirname(__FILE__)),'./rst2pdf.py')
 
   desc 'rake pdf'
-  task:pdf =>  [:output]  do
-    `#{path} #{PROJ.root}/#{PROJ.source}.rst`
-    `mv #{PROJ.root}/#{PROJ.source}.rst.pdf #{PROJ.output}/#{PROJ.source}.pdf 2>/dev/null`   
+  task:pdf =>  [:output,PDF]
+  file PDF => [RST] do
+    `#{path} #{RST}`
+    `mv #{RST}.pdf #{PDF} 2>/dev/null`   
   end
   
   desc 'rake odt'
-  task:odt => [:rst2odt,:output] do
-    sh "rst2odt #{PROJ.root}/#{PROJ.source}.rst #{PROJ.output}/#{PROJ.source}.odt"
+  task:odt => [:rst2odt,:output,ODT]
+  file ODT => [RST] do
+    sh "rst2odt #{RST} #{ODT}"
   end
-
 
 version_control_array = ['svn','hg','git']
 def lastModity(split_letter,vc)
@@ -73,6 +80,7 @@ end
      version_control_array.each do |vc|
         if !`#{vc} log 2>/dev/null`.chomp.empty?
           version_control = vc
+          puts vc
           break
         end
      end
@@ -84,6 +92,4 @@ end
      puts
      puts "pdf url ======>#{PROJ.output}/#{PROJ.source}.pdf"   
   end
-
 end
-

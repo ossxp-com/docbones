@@ -18,6 +18,10 @@ class InfoCommand < Command
         msg << "   " << File.basename(fn) <<"----------"<<'docbook' << "\n"
       elsif test(?e, File.join(fn,'NAME.rst.bns'))
         msg << "   " << File.basename(fn) <<"----------"<<'reST'<<"\n"
+      elsif test(?e, File.join(fn,'NAME.mm.bns'))
+        msg << "   " << File.basename(fn) <<"----------"<<'freemind'<<"\n"
+      else
+
       end
     end
 

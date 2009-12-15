@@ -14,8 +14,8 @@ class CreateCommand < Command
       :stderr => @err,
       :verbose => verbose?
     )
-    #raise "Output directory already exists #{output_dir.inspect}" if test(?e, fm.destination)
-
+    if index_name.nil?
+       raise "Output directory already exists #{output_dir.inspect}" if test(?d, fm.destination)    end
     begin
       fm.copy index_name,name,source_suffix
       copy_tasks(File.join(output_dir, 'tasks')) if with_tasks?
@@ -72,11 +72,15 @@ class CreateCommand < Command
            options[:skeleton_dir] = ::Docbones.path('data/db')
            options[:source_suffix] = '.xml' if source_suffix.nil?
         end
-        options[:index_name] = last_name.sub(/(\.rst$)|(\.xml)/,'')
+        if last_name =~ /\.mm/
+           options[:skeleton_dir] = ::Docbones.path('data/mm')
+           options[:source_suffix] = '.mm' if source_suffix.nil?
+        end
+        options[:index_name] = last_name.sub(/(\.rst$)|(\.xml)|(\.mm)/,'')
         args_names.delete_at(args_names.size-1)
         options[:name] = args_names.join('/')
     else
-        options[:name] = args.empty? ? nil : args.join('_') 
+        options[:name] = args.empty? ? nil : args.join('_')
     end
     if name.nil?
       @out.puts opts

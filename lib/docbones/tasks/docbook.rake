@@ -10,6 +10,11 @@ XPC  = "xsltproc -o"
 HXSL = "tools/html-stylesheet.xsl"
 HSXSL= "tools/chunk-stylesheet.xsl"
 PXSL = "tools/fo-stylesheet.xsl"
+HTML =  PROJ.output+"/"+PROJ.index+".html"
+HTMLS = PROJ.output+"/"+PROJ.name 
+FO = PROJ.output+"/"+PROJ.index+".fo"
+PDF = PROJ.output+"/"+PROJ.index+".pdf"
+XML = PROJ.root+'/'+PROJ.index+'.xml'
 
 version_control_array = ['svn','hg','git']
 def lastModity(split_letter,vc)
@@ -44,7 +49,7 @@ end
      puts     
      puts "html url======>#{PROJ.output}/#{PROJ.index}.html"
      puts 
-     puts "htmls url ======>#{PROJ.output}/#{PROJ.index}"
+     puts "htmls url ======>#{PROJ.output}/#{PROJ.name}"
      puts
      puts "pdf url ======>#{PROJ.output}/#{PROJ.index}.pdf"   
   end
@@ -67,20 +72,24 @@ end
     end
   end
 
+  
   desc 'make html'
-  task:html => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.index}.html #{HXSL} #{PROJ.root}/#{PROJ.index}.xml"
+  task:html => [:xsltproc,HTML]
+  file HTML => [XML] do
+    sh "#{XPC}  #{HTML} #{HXSL} #{XML}"
   end
   desc 'make htmls'
-  task:htmls => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.name}/ #{HSXSL} #{PROJ.root}/#{PROJ.index}.xml"
-    `cp -a tools/images #{PROJ.output}/#{PROJ.name}`
+  task:htmls => [:xsltproc,HTMLS] 
+  file HTMLS => [XML] do
+    sh "#{XPC} #{HTMLS}/ #{HSXSL} #{XML}"
+    `cp -a tools/images #{HTMLS}/`
   end 
-  task:fo => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.index}.fo #{PXSL} #{PROJ.root}/#{PROJ.index}.xml"
+  file FO =>[XML] do
+    sh "#{XPC} #{FO} #{PXSL} #{XML}"
   end
   desc 'make pdf'
-  task:pdf => [:fo,:fop] do
-    sh "fop -c /etc/fop/fop.xconf #{PROJ.output}/#{PROJ.index}.fo #{PROJ.output}/#{PROJ.index}.pdf"
+  task:pdf => [:fop,:xsltproc,PDF] 
+  file PDF => [FO] do
+    sh "fop -c /etc/fop/fop.xconf #{FO} #{PDF}"
   end
 end

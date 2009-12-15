@@ -1,6 +1,6 @@
 
 require 'docbones'
-source_suffix = '.rst'
+source_suffix = '.mm'
 ::Docbones.setup source_suffix
 
 PROJ.root= "."
@@ -9,3 +9,4 @@ PROJ.index = "<%= index_name%>"
 PROJ.output = "output"
 
 task:default 
+
