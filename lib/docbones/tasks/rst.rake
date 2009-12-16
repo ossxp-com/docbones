@@ -8,7 +8,7 @@ namespace:rst do
 RST = PROJ.root+"/"+PROJ.index+".rst" 
 HTML = PROJ.output+"/"+PROJ.index+".html"
 PDF = PROJ.output+"/"+PROJ.index+".pdf"
-ODT = PROJ.output+"/"+PROJ.index+".odf"
+ODT = PROJ.output+"/"+PROJ.index+".odt"
 OUTPUT = PROJ.output
   task:rst2html do
     a = `which rst2html`.chomp

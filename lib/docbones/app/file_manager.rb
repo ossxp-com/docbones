@@ -122,7 +122,11 @@ class FileManager
   def _files_to_copy(index_name,name,source_suffix)
     rgxp = %r/\A#{source}\/?/
     exclude = %r/tmp$|bak$|~$|CVS|\.svn/
-    index_suffix = source_suffix.nil? ? nil : index_name.strip+source_suffix.strip
+    if index_name.nil?
+       index_suffix = nil
+    else
+       index_suffix = source_suffix.nil? ? nil : index_name.strip+source_suffix.strip
+    end
     index_name_pwd = index_suffix.nil? ? File.join(Dir.pwd,name) : File.expand_path(File.join(name,index_suffix)) 
     if test(?e,index_name_pwd)
        suffix = /#{source_suffix}/
