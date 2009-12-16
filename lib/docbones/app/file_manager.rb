@@ -59,12 +59,13 @@ class FileManager
 
   #
   #
-  def finalize( name )
+  def finalize(index_name,name)
     name = name.to_s
     return if name.empty?
+    index_name = name if index_name.empty?
 
-    self.destination = _rename(destination, name)
-    _erb(name)
+    self.destination = _rename(destination, index_name)
+    _erb(index_name,name)
 
     self
   end
@@ -88,9 +89,8 @@ class FileManager
 
   #
   #
-  def _erb( name )
-    binding = _erb_binding(name)
-
+  def _erb(index_name,name)
+    #binding = _erb_binding(name)
     Dir.glob(File.join(destination, '**', '*')).each do |fn|
       next unless test(?f, fn) and '.bns' == File.extname(fn)
 
@@ -123,13 +123,16 @@ class FileManager
     rgxp = %r/\A#{source}\/?/
     exclude = %r/tmp$|bak$|~$|CVS|\.svn/
     index_suffix = source_suffix.nil? ? nil : index_name.strip+source_suffix.strip
-    index_name_pwd = index_suffix.nil? ? '' : File.expand_path(File.join(name,index_suffix)) 
+    index_name_pwd = index_suffix.nil? ? File.join(Dir.pwd,name) : File.expand_path(File.join(name,index_suffix)) 
+    if test(?e,index_name_pwd)
+       suffix = /#{source_suffix}/
+    else
+       suffix = nil
+    end
     ary = Dir.glob(File.join(source, '**', '*'), File::FNM_DOTMATCH).map do |filename|
       next if exclude =~ filename
       next if test(?d, filename)
-      if test(?e,index_name_pwd) 
-        next if  /#{source_suffix.strip}/ =~ filename.to_s
-      end
+      next if suffix =~ filename
       filename.sub rgxp, ''
     end
     ary.compact!

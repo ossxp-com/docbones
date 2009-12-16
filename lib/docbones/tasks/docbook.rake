@@ -10,6 +10,11 @@ XPC  = "xsltproc -o"
 HXSL = "tools/html-stylesheet.xsl"
 HSXSL= "tools/chunk-stylesheet.xsl"
 PXSL = "tools/fo-stylesheet.xsl"
+HTML =  PROJ.output+"/"+PROJ.index+".html"
+HTMLS = PROJ.output+"/"+PROJ.name 
+FO = PROJ.output+"/"+PROJ.index+".fo"
+PDF = PROJ.output+"/"+PROJ.index+".pdf"
+XML = PROJ.root+'/'+PROJ.index+'.xml'
 
 version_control_array = ['svn','hg','git']
 def lastModity(split_letter,vc)
@@ -31,7 +36,7 @@ def last_modify version_control
   last_my
 end
 
-  desc "source and output info"
+  desc "index and output info"
   task:info => [:html,:htmls,:pdf] do
      version_control = nil
      version_control_array.each do |vc|
@@ -42,45 +47,48 @@ end
      end
      puts last_modify version_control
      puts     
-     puts "html url======>#{PROJ.output}/#{PROJ.source}.html"
+     puts "html url======>#{PROJ.output}/#{PROJ.index}.html"
      puts 
-     puts "htmls url ======>#{PROJ.output}/#{PROJ.source}"
+     puts "htmls url ======>#{PROJ.output}/#{PROJ.name}"
      puts
-     puts "pdf url ======>#{PROJ.output}/#{PROJ.source}.pdf"   
+     puts "pdf url ======>#{PROJ.output}/#{PROJ.index}.pdf"   
   end
 
   desc 'make all'
   file 'all' => [:html,:htmls,:pdf]
 
   task:xsltproc do
-    if test(?d,"/usr/bin/xsltproc")
+    if !test(?e,"/usr/bin/xsltproc")
        puts "uninstall xsltproc,please:"
        puts "sudo aptitude install xsltproc"
        exit 1
     end
   end
   task:fop do
-    if test(?d,"/usr/bin/fop")
+    if !test(?e,"/usr/bin/fop")
        puts "uninstall fop,please:"
        puts "sudo aptitude install fop"
        exit 1
     end
   end
 
+stringparam = "--stringparam root.filename" 
   desc 'make html'
-  task:html => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.source}.html #{HXSL} #{PROJ.root}/#{PROJ.source}.xml"
+  task:html => [:xsltproc,HTML]
+  file HTML => [XML] do
+    sh "xsltproc #{stringparam} #{PROJ.output}/#{PROJ.index} #{HXSL} #{XML}"
   end
   desc 'make htmls'
-  task:htmls => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.source}/ #{HSXSL} #{PROJ.root}/#{PROJ.source}.xml"
-    `cp -a tools/images #{PROJ.output}/#{PROJ.source}`
+  task:htmls => [:xsltproc,HTMLS] 
+  file HTMLS => [XML] do
+    sh "#{XPC} #{HTMLS}/ #{HSXSL} #{XML}"
   end 
-  task:fo => [:xsltproc] do
-    sh "#{XPC} #{PROJ.output}/#{PROJ.source}.fo #{PXSL} #{PROJ.root}/#{PROJ.source}.xml"
+  file FO =>[XML] do
+    sh "#{XPC} #{FO} #{PXSL} #{XML}"
   end
   desc 'make pdf'
-  task:pdf => [:fo,:fop] do
-    sh "fop -c /etc/fop/fop.xconf #{PROJ.output}/#{PROJ.source}.fo #{PROJ.output}/#{PROJ.source}.pdf"
+  task:pdf => [:fop,:xsltproc,PDF] 
+  file PDF => [FO] do
+    sh "fop -c /etc/fop/fop.xconf #{FO} #{PDF}"
   end
 end

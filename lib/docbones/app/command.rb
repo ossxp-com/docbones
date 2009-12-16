@@ -100,10 +100,10 @@ class Command
     {
       :type => ['-t', '--type NAME', String, '',
           lambda { |value|
-            if value =~ /(db)|(docbook)/
+            if value =~ /(db)|(docbook)/i
                options[:skeleton_dir] = ::Docbones.path('data/db')
                options[:source_suffix] = '.xml'
-            elsif value  =~ /(rst)|(rest)|(reStructuredText)|(reST)/
+            elsif value  =~ /(rst)|(rest)|(reStructuredText)|(reST)/i
                options[:skeleton_dir] = ::Docbones.path('data/rest')
                options[:source_suffix] = '.rst'
             else

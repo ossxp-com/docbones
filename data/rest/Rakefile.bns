@@ -4,7 +4,8 @@ source_suffix = '.rst'
 ::Docbones.setup source_suffix
 
 PROJ.root= "."
-PROJ.source = "<%= name%>"
+PROJ.name = "<%= name%>"
+PROJ.index = "<%= index_name%>"
 PROJ.output = "output"
 
 task:default 

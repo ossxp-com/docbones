@@ -14,13 +14,13 @@ class CreateCommand < Command
       :stderr => @err,
       :verbose => verbose?
     )
-    #raise "Output directory already exists #{output_dir.inspect}" if test(?e, fm.destination)
-
+    if index_name.nil?
+       raise "Output directory already exists #{output_dir.inspect}" if test(?d, fm.destination)    end
     begin
       fm.copy index_name,name,source_suffix
       copy_tasks(File.join(output_dir, 'tasks')) if with_tasks?
       options[:index_name] = name if index_name.nil?
-      fm.finalize index_name
+      fm.finalize index_name,name
 
       pwd = File.expand_path(FileUtils.pwd)
       msg = "Created '#{name}'"
@@ -76,7 +76,7 @@ class CreateCommand < Command
         args_names.delete_at(args_names.size-1)
         options[:name] = args_names.join('/')
     else
-        options[:name] = args.empty? ? nil : args.join('_') 
+        options[:name] = args.empty? ? nil : args.join('_')
     end
     if name.nil?
       @out.puts opts

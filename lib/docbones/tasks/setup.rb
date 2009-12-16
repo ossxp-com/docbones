@@ -13,7 +13,8 @@ class OpenStruct; undef :gem if defined? :gem; end
 PROJ = OpenStruct.new(
   :output => "output",
   :root => nil,
-  :source => nil
+  :index => nil,
+  :name => nil
 )
 
 # Load the other rake files in the tasks folder
@@ -23,10 +24,9 @@ class DocbonesSetup
      tasks_dir = File.expand_path(File.dirname(__FILE__))
      if source_suffix =~ /\.xml/
         rakefiles = Dir.glob(File.join(tasks_dir, 'docbook.rake')).sort
+        rakefiles << File.join(tasks_dir,'mm.rake')
      elsif source_suffix =~ /\.rst/
         rakefiles = Dir.glob(File.join(tasks_dir, 'rst.rake')).sort
-     else
-        rakefiles = Dir.glob(File.join(tasks_dir,'*.rake')).sort
      end
      import(*rakefiles)
   end

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version='1.0'>
 
-  <xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/html/docbook.xsl"/>
-  <xsl:import href="whodo-common.xsl"/>
-
+   <xsl:import href="/opt/docbook/tools/xml/stylesheet/worldhello.net/html/onechunk.xsl"/>
+   <xsl:param name="document_root">/docbook</xsl:param>
+   <xsl:param name="html.ext">.html</xsl:param>
 </xsl:stylesheet>
