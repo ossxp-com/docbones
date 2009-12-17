@@ -14,7 +14,8 @@ PROJ = OpenStruct.new(
   :output => "output",
   :root => nil,
   :index => nil,
-  :name => nil
+  :name => nil,
+  :mm => nil
 )
 
 # Load the other rake files in the tasks folder

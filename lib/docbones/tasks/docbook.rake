@@ -1,8 +1,11 @@
 
 desc 'clean the output/*'
 task:clean do
-  `rm -rf #{PROJ.output}/* 2>/dev/null`
-  puts "rm -rf #{PROJ.output}/*"
+  sh "rm -rf #{PROJ.output}/*html 2>/dev/null"
+  sh "rm -rf #{PROJ.output}/*pdf 2>/dev/null"
+  sh "rm -rf #{PROJ.output}/*fo 2>/dev/null"
+  sh "rm -rf #{PROJ.output}/*mm 2>/dev/null"
+  sh "rm -rf #{PROJ.output}/#{PROJ.name} 2>/dev/null"
 end
 namespace:db do
 
