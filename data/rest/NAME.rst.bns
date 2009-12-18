@@ -407,6 +407,6 @@ True   True   True
 
    - Here is a bullet list.
 
-.. Danger: modify at your own risk!
+.. Danger:: modify at your own risk!
 
 
