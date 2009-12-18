@@ -86,10 +86,10 @@ end
      end
      puts last_modify version_control
      puts     
-     puts "html url======>#{PROJ.output}/#{PROJ.source}.html"
+     puts "html url======>#{HTML}"
      puts 
-     puts "htmls url ======>#{PROJ.output}/#{PROJ.source}"
+     puts "odt url ======>#{ODT}"
      puts
-     puts "pdf url ======>#{PROJ.output}/#{PROJ.source}.pdf"   
+     puts "pdf url ======>#{PDF}"   
   end
 end
