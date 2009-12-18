@@ -81,7 +81,6 @@ end
      version_control_array.each do |vc|
         if !`#{vc} log 2>/dev/null`.chomp.empty?
           version_control = vc
-          puts vc
           break
         end
      end
