@@ -4,11 +4,7 @@ PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
 PROJ.output = PROJ.output.nil? ? PROJ.output : PROJ.output.strip
 desc 'clean the output/*'
 task:clean do
-  sh "rm -rf #{PROJ.output}/*html 2>/dev/null"
-  sh "rm -rf #{PROJ.output}/*pdf 2>/dev/null"
-  sh "rm -rf #{PROJ.output}/*fo 2>/dev/null"
-  sh "rm -rf #{PROJ.output}/*mm 2>/dev/null"
-  sh "rm -rf #{PROJ.output}/#{PROJ.name} 2>/dev/null"
+  sh "rm -rf #{PROJ.output} 2>/dev/null"
 end
 namespace:db do
 
