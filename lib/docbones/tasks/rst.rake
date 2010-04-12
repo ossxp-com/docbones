@@ -1,3 +1,7 @@
+PROJ.root= PROJ.root.nil? ? PROJ.root : PROJ.root.strip
+PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
+PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
+PROJ.output = PROJ.output.nil? ? PROJ.output : PROJ.output.strip
 desc 'clean the output/*'
 task:clean do
   sh "rm -rf #{PROJ.output}/*html 2>/dev/null"
@@ -5,7 +9,6 @@ task:clean do
   sh "rm -rf #{PROJ.output}/*pdf 2>/dev/null"
 end 
 namespace:rst do
-  
 RST = PROJ.root+"/"+PROJ.index+".rst" 
 HTML = PROJ.output+"/"+PROJ.index+".html"
 PDF = PROJ.output+"/"+PROJ.index+".pdf"

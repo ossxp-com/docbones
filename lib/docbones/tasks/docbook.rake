@@ -1,4 +1,7 @@
-
+PROJ.root = PROJ.root.nil? ? PROJ.root : PROJ.root.strip
+PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
+PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
+PROJ.output = PROJ.output.nil? ? PROJ.output : PROJ.output.strip
 desc 'clean the output/*'
 task:clean do
   sh "rm -rf #{PROJ.output}/*html 2>/dev/null"
@@ -9,11 +12,11 @@ task:clean do
 end
 namespace:db do
 
-XPC  = "xsltproc -o"
+XPC = "xsltproc -o"
 HXSL = "tools/html-stylesheet.xsl"
-HSXSL= "tools/chunk-stylesheet.xsl"
+HSXSL = "tools/chunk-stylesheet.xsl"
 PXSL = "tools/fo-stylesheet.xsl"
-HTML =  PROJ.output+"/"+PROJ.index+".html"
+HTML = PROJ.output+"/"+PROJ.index+".html"
 HTMLS = PROJ.output+"/"+PROJ.name 
 FO = PROJ.output+"/"+PROJ.index+".fo"
 PDF = PROJ.output+"/"+PROJ.index+".pdf"
