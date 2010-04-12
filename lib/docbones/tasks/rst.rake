@@ -28,7 +28,7 @@ OUTPUT = PROJ.output
   end
 
   file OUTPUT do
-     `mkdir #{OUTPUT}`
+     `mkdir -p #{OUTPUT}`
   end
   
   desc 'rake all'
