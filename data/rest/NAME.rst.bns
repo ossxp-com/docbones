@@ -115,7 +115,7 @@ for Docbones
 - 解析文本调用缺省解析器: `子曰：“学而时习之不亦乐乎？”`
 - 以 tt 标签显示的: ``import os``
 - 水的分子式是 |H2O|.
-- 相对论公司： |e=mc2|.
+- 相对论公式： |e=mc2|.
 
 .. |H2O| replace:: H\ :sub:`2`\ O
 .. |e=mc2| replace:: E = mc\ :sup:`2`
