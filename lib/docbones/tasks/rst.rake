@@ -27,7 +27,7 @@ OUTPUT = PROJ.output
     end
   end
 
-  file [OUTPUT] do
+  file OUTPUT do
      `mkdir #{OUTPUT}`
   end
   
@@ -35,7 +35,7 @@ OUTPUT = PROJ.output
   file 'all' => ['html','pdf','odt']
   
   desc 'rake html'
-  task:html => [:rst2html,:output,HTML]
+  task:html => [:rst2html,OUTPUT,HTML]
   file HTML => [RST] do
     sh "rst2html #{RST} > #{HTML}"
   end
@@ -43,14 +43,14 @@ OUTPUT = PROJ.output
   path= File.join(File.expand_path(File.dirname(__FILE__)),'./rst2pdf.py')
 
   desc 'rake pdf'
-  task:pdf =>  [:output,PDF]
+  task:pdf =>  [OUTPUT,PDF]
   file PDF => [RST] do
     `#{path} #{RST}`
     `mv #{RST}.pdf #{PDF} 2>/dev/null`   
   end
   
   desc 'rake odt'
-  task:odt => [:rst2odt,:output,ODT]
+  task:odt => [:rst2odt,OUTPUT,ODT]
   file ODT => [RST] do
     sh "rst2odt #{RST} #{ODT}"
   end
