@@ -15,6 +15,7 @@ PROJ = OpenStruct.new(
   :root => nil,
   :index => nil,
   :name => nil,
+  :images => "images",
   :mm => nil
 )
 

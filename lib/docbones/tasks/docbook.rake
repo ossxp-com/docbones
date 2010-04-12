@@ -2,6 +2,7 @@ PROJ.root = PROJ.root.nil? ? PROJ.root : PROJ.root.strip
 PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
 PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
 PROJ.output = PROJ.output.nil? ? PROJ.output : PROJ.output.strip
+images = PROJ.images.nil? ? PROJ.images : PROJ.images.strip
 desc 'clean the output/*'
 task:clean do
   sh "rm -rf #{PROJ.output} 2>/dev/null"
@@ -79,11 +80,17 @@ stringparam = "--stringparam root.filename"
   task:html => [:xsltproc,HTML]
   file HTML => [XML] do
     sh "xsltproc #{stringparam} #{PROJ.output}/#{PROJ.index} #{HXSL} #{XML}"
+    if !images.empty? & test(?e,images)
+       sh "cp -a #{images} #{PROJ.output}"
+    end
   end
   desc 'make htmls'
   task:htmls => [:xsltproc,HTMLS] 
   file HTMLS => [XML] do
     sh "#{XPC} #{HTMLS}/ #{HSXSL} #{XML}"
+    if !images.empty? & test(?e,images)
+       sh "cp -a #{images} #{HTMLS}"
+    end
   end 
   file FO =>[XML] do
     sh "#{XPC} #{FO} #{PXSL} #{XML}"

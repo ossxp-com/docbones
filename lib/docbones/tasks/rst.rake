@@ -2,6 +2,7 @@ PROJ.root= PROJ.root.nil? ? PROJ.root : PROJ.root.strip
 PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
 PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
 PROJ.output = PROJ.output.nil? ? PROJ.output : PROJ.output.strip
+images = PROJ.images.nil? ? PROJ.images : PROJ.images.strip
 desc 'clean the output/*'
 task:clean do
   sh "rm -rf #{PROJ.output} 2>/dev/null"
@@ -39,6 +40,9 @@ OUTPUT = PROJ.output
   task:html => [:rst2html,OUTPUT,HTML]
   file HTML => [RST] do
     sh "rst2html #{RST} > #{HTML}"
+    if !images.empty? & test(?e,images)
+        sh "cp -a #{images} #{OUTPUT}"
+    end
   end
    
   path= File.join(File.expand_path(File.dirname(__FILE__)),'./rst2pdf.py')
