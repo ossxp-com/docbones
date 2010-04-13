@@ -2,7 +2,8 @@ PROJ.root= PROJ.root.nil? ? PROJ.root : PROJ.root.strip
 PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
 PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
 PROJ.output = PROJ.output.nil? ? PROJ.output : PROJ.output.strip
-images = PROJ.images.nil? ? PROJ.images : PROJ.images.strip
+PROJ.images = PROJ.images.nil? ? PROJ.images : PROJ.images.strip
+PROJ.pdf_font = PROJ.pdf_font.nil? ? PROJ.pdf_font : PROJ.pdf_font.strip
 desc 'clean the output/*'
 task:clean do
   sh "rm -rf #{PROJ.output} 2>/dev/null"
@@ -13,10 +14,14 @@ HTML = PROJ.output+"/"+PROJ.index+".html"
 PDF = PROJ.output+"/"+PROJ.index+".pdf"
 ODT = PROJ.output+"/"+PROJ.index+".odt"
 OUTPUT = PROJ.output
+images=PROJ.images
+pdf_font=PROJ.pdf_font
   task:rst2html do
     a = `which rst2html`.chomp
     if a == ''
+      puts '*'*80
       puts 'please, sudo aptitude install rst2html'
+      puts '*'*80
     exit 1
     end
   end
@@ -24,7 +29,9 @@ OUTPUT = PROJ.output
   task:rst2odt do
     a = `which rst2odt`.chomp
     if a == ''
+      puts '*'*80
       puts 'please, sudo aptitude install rst2odt'
+      puts '*'*80
     exit
     end
   end
@@ -34,7 +41,7 @@ OUTPUT = PROJ.output
   end
   
   desc 'rake all'
-  file 'all' => ['html','pdf','odt']
+  file 'all' => ['html','odt','pdf']
   
   desc 'rake html'
   task:html => [:rst2html,OUTPUT,HTML]
@@ -44,20 +51,35 @@ OUTPUT = PROJ.output
         sh "cp -a #{images} #{OUTPUT}"
     end
   end
-   
   path= File.join(File.expand_path(File.dirname(__FILE__)),'./rst2pdf.py')
-
+  simhei = '/etc/fop/simhei.ttf'
   desc 'rake pdf'
   task:pdf =>  [OUTPUT,PDF]
-  file PDF => [RST] do
+  file PDF => [RST,simhei] do
     `#{path} #{RST}`
     `mv #{RST}.pdf #{PDF} 2>/dev/null`   
   end
-  
   desc 'rake odt'
   task:odt => [:rst2odt,OUTPUT,ODT]
   file ODT => [RST] do
     sh "rst2odt #{RST} #{ODT}"
+  end
+  ossxpfond = "/opt/ossxp/fonts/truetype/"+pdf_font
+  debianfond = "/usr/share/fonts/truetype/"+pdf_font
+  file simhei do
+    if !test(?e,'/etc/fop')
+       sh "sudo mkdir -p /etc/fop"
+    end
+    if test(?e,ossxpfond)
+       sh "sudo ln #{ossxpfond} #{simhei}"
+    elsif test(?e,debianfond)
+       sh "sudo ln #{debianfond} #{simhei}"
+    else
+       puts '*'*80
+       puts "Sorry,the file #{debianfond} does not exist"
+       puts '*'*80
+       exit 1
+    end
   end
 
 version_control_array = ['svn','hg','git']

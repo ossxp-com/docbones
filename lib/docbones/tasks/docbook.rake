@@ -2,7 +2,7 @@ PROJ.root = PROJ.root.nil? ? PROJ.root : PROJ.root.strip
 PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
 PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
 PROJ.output = PROJ.output.nil? ? PROJ.output : PROJ.output.strip
-images = PROJ.images.nil? ? PROJ.images : PROJ.images.strip
+PROJ.images = PROJ.images.nil? ? PROJ.images : PROJ.images.strip
 desc 'clean the output/*'
 task:clean do
   sh "rm -rf #{PROJ.output} 2>/dev/null"
@@ -18,7 +18,7 @@ HTMLS = PROJ.output+"/"+PROJ.name
 FO = PROJ.output+"/"+PROJ.index+".fo"
 PDF = PROJ.output+"/"+PROJ.index+".pdf"
 XML = PROJ.root+'/'+PROJ.index+'.xml'
-
+images=PROJ.images
 version_control_array = ['svn','hg','git']
 def lastModity(split_letter,vc)
    a=`LANGUAGE=C;#{vc}`.chomp.split(split_letter)

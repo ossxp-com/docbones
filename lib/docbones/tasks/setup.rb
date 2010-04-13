@@ -16,6 +16,7 @@ PROJ = OpenStruct.new(
   :index => nil,
   :name => nil,
   :images => "images",
+  :pdf_font => "simhei.ttf",
   :mm => nil
 )
 
