@@ -783,7 +783,10 @@ def gen_elements(node, depth, in_line_block=False, style=styles['BodyText']):
    i=Image(filename=str(node.get("uri")))
    if node.get('align'):
       i.hAlign=node.get('align').upper()
-   
+   if node.get('width'):
+      i._width=int(node.get('width'))
+   if node.get('height'):
+      i._height=int(node.get('height'))
    node.elements=[i]
  elif isinstance (node, docutils.nodes.figure):
    # The sub-elements are the figure and the caption, and't ugly if
