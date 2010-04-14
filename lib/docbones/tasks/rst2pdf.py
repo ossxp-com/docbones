@@ -26,7 +26,7 @@ try:
   from wordaxe.rl.paragraph import Paragraph
   from wordaxe.rl.styles import ParagraphStyle, getSampleStyleSheet
 except:
-  print "No support for hyphenation, install wordaxe"
+  print "No support for hyphenation,install python-wordaxe"
 
 ## 就是在这里添加前面说的代码啦 ############################
 import reportlab.rl_config
@@ -76,7 +76,7 @@ try:
   from wordaxe.rl.paragraph import Paragraph
   from wordaxe.rl.styles import ParagraphStyle,getSampleStyleSheet
 except:
-  print "No hyphenation support install wordaxe"
+  print "No hyphenation support, install python-wordaxe"
 import os
 
 # Set these, and then **maybe** think of setting the stylesheets below
@@ -294,7 +294,8 @@ try:
   except:
     wordaxe.hyphRegistry['EN'] = PyHnjHyphenator('en_US',5,purePython=True)
 except:
-  print "No support for hyphenation, install wordaxe"
+  print "No support for hyphenation, install python-wordaxe"
+
 
 
 # This is A4 paper, change it as you wish

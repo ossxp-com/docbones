@@ -51,13 +51,18 @@ pdf_font=PROJ.pdf_font
         sh "cp -a #{images} #{OUTPUT}"
     end
   end
-  path= File.join(File.expand_path(File.dirname(__FILE__)),'./rst2pdf.py')
+  path= File.join(File.expand_path(File.dirname(__FILE__)),'rst2pdf.py')
   simhei = '/etc/fop/simhei.ttf'
   desc 'rake pdf'
   task:pdf =>  [OUTPUT,PDF]
   file PDF => [RST,simhei] do
-    `#{path} #{RST}`
-    `mv #{RST}.pdf #{PDF} 2>/dev/null`   
+    a=`python #{path} #{RST}`
+    `mv #{RST}.pdf #{PDF} 2>/dev/null`
+    if !a.strip.empty?
+       puts '*'*80
+       puts a   
+       puts '*'*80
+    end
   end
   desc 'rake odt'
   task:odt => [:rst2odt,OUTPUT,ODT]
