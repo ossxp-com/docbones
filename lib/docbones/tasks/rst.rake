@@ -76,9 +76,9 @@ pdf_font=PROJ.pdf_font
        sh "sudo mkdir -p /etc/fop"
     end
     if test(?e,ossxpfond)
-       sh "sudo ln #{ossxpfond} #{simhei}"
+       sh "sudo ln -s #{ossxpfond} #{simhei}"
     elsif test(?e,debianfond)
-       sh "sudo ln #{debianfond} #{simhei}"
+       sh "sudo ln -s #{debianfond} #{simhei}"
     else
        puts '*'*80
        puts "Sorry,the file #{debianfond} does not exist"
