@@ -784,6 +784,11 @@ def gen_elements(node, depth, in_line_block=False, style=styles['BodyText']):
    i=Image(filename=str(node.get("uri")))
    if node.get('align'):
       i.hAlign=node.get('align').upper()
+   if node.get('scale'):
+      scale = float(node.get('scale'))/100
+      w = i.imageWidth*scale
+      h = i.imageHeight*scale
+      i._setup(w,h,'direct',0)
    if node.get('width'):
       i._width=int(node.get('width'))/1.5
    if node.get('height'):
