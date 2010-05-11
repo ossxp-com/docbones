@@ -1,0 +1,94 @@
+diff --git a/docutils/utils.py b/docutils/utils.py
+index 492e383..644c324 100644
+--- a/docutils/utils.py
++++ b/docutils/utils.py
+@@ -502,6 +502,16 @@ def get_stylesheet_list(settings):
+     else:
+         return []
+ 
++# Return 'javascript' or 'javascript_path' arguments as list.
++def get_javascript_list(settings):
++    """
++    Retrieve list of javascript references from the settings object.
++    """
++    if settings.javascript:
++       return settings.javascript.split(",")
++    else:
++       return []
++
+ def get_trim_footnote_ref_space(settings):
+     """
+     Return whether or not to trim footnote space.
+diff --git a/docutils/writers/html4css1/__init__.py b/docutils/writers/html4css1/__init__.py
+index eca4f1b..9ef694b 100644
+--- a/docutils/writers/html4css1/__init__.py
++++ b/docutils/writers/html4css1/__init__.py
+@@ -63,6 +63,10 @@ class Writer(writers.Writer):
+           ['--stylesheet-path'],
+           {'metavar': '<file>', 'overrides': 'stylesheet',
+            'default': default_stylesheet_path}),
++         ('Specify comma separated list of JavaScript URLs, '
++          'with --javascript option.',
++          ['--javascript'],
++          {'metavar': '<URL>', 'default': []}),
+          ('Embed the stylesheet(s) in the output HTML file.  The stylesheet '
+           'files must be accessible during processing. This is the default.',
+           ['--embed-stylesheet'],
+@@ -139,7 +143,7 @@ class Writer(writers.Writer):
+     config_section_dependencies = ('writers',)
+ 
+     visitor_attributes = (
+-        'head_prefix', 'head', 'stylesheet', 'body_prefix',
++        'head_prefix', 'head', 'stylesheet','javascript', 'body_prefix',
+         'body_pre_docinfo', 'docinfo', 'body', 'body_suffix',
+         'title', 'subtitle', 'header', 'footer', 'meta', 'fragment',
+         'html_prolog', 'html_head', 'html_title', 'html_subtitle',
+@@ -235,6 +239,7 @@ class HTMLTranslator(nodes.NodeVisitor):
+     generator = ('<meta name="generator" content="Docutils %s: '
+                  'http://docutils.sourceforge.net/" />\n')
+     stylesheet_link = '<link rel="stylesheet" href="%s" type="text/css" />\n'
++    javascript_link = '<script src="%s" type="text/javascript"></script>\n'
+     embedded_stylesheet = '<style type="text/css">\n\n%s\n</style>\n'
+     words_and_spaces = re.compile(r'\S+| +|\n')
+     sollbruchstelle = re.compile(r'.+\W\W.+|[-?].+', re.U) # wrap point inside word
+@@ -259,6 +264,7 @@ class HTMLTranslator(nodes.NodeVisitor):
+         self.head = self.meta[:]
+         # stylesheets
+         styles = utils.get_stylesheet_list(settings)
++        jscripts = utils.get_javascript_list(settings)
+         if settings.stylesheet_path and not(settings.embed_stylesheet):
+             styles = [utils.relative_path(settings._destination, sheet)
+                       for sheet in styles]
+@@ -270,6 +276,11 @@ class HTMLTranslator(nodes.NodeVisitor):
+         else: # link to stylesheets
+             self.stylesheet = [self.stylesheet_link % self.encode(stylesheet)
+                                for stylesheet in styles]
++        if jscripts:
++            self.javascript = [self.javascript_link % self.encode(js)
++                               for js in jscripts]
++        else:
++            self.javascript = []
+         self.body_prefix = ['</head>\n<body>\n']
+         # document title, subtitle display
+         self.body_pre_docinfo = []
+@@ -304,7 +315,7 @@ class HTMLTranslator(nodes.NodeVisitor):
+ 
+     def astext(self):
+         return ''.join(self.head_prefix + self.head
+-                       + self.stylesheet + self.body_prefix
++                       + self.stylesheet + self.javascript + self.body_prefix
+                        + self.body_pre_docinfo + self.docinfo
+                        + self.body + self.body_suffix)
+ 
+diff --git a/docutils/writers/html4css1/template.txt b/docutils/writers/html4css1/template.txt
+index 2591bce..ffe2b31 100644
+--- a/docutils/writers/html4css1/template.txt
++++ b/docutils/writers/html4css1/template.txt
+@@ -1,6 +1,7 @@
+ %(head_prefix)s
+ %(head)s
+ %(stylesheet)s
++%(javascript)s
+ %(body_prefix)s
+ %(body_pre_docinfo)s
+ %(docinfo)s

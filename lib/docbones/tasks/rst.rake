@@ -1,3 +1,5 @@
+require 'docbones'
+PATH=Docbones::PATH
 PROJ.root= PROJ.root.nil? ? PROJ.root : PROJ.root.strip
 PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
 PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
@@ -16,13 +18,20 @@ ODT = PROJ.output+"/"+PROJ.index+".odt"
 OUTPUT = PROJ.output
 images=PROJ.images
 pdf_font=PROJ.pdf_font
+js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
+
   task:rst2html do
-    a = `which rst2html`.chomp
-    if a == ''
-      puts '*'*80
-      puts 'please, sudo aptitude install rst2html'
-      puts '*'*80
-    exit 1
+    if system('which rst2html >/dev/null 2>&1')
+        if not js_path.empty? and not system("python #{PATH}/contrib/docutils/hack_docutils.py -t")
+            if not system("python #{PATH}/contrib/docutils/hack_docutils.py -p")
+                exit 1
+            end
+        end
+    else
+        puts '*'*80
+        puts 'please, sudo aptitude install rst2html'
+        puts '*'*80
+        exit 1
     end
   end
 
@@ -43,7 +52,6 @@ pdf_font=PROJ.pdf_font
   desc 'rake all'
   file 'all' => ['html','odt','pdf']
 css_path = PROJ.css_path.strip.empty? ? "" : "--stylesheet-path=#{PROJ.css_path.strip} --link-stylesheet"
-js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
   desc 'rake html'
   task:html => [:rst2html,OUTPUT,HTML]
   file HTML => [RST] do
