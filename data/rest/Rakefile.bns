@@ -9,5 +9,7 @@ PROJ.index = "<%= index_name%>"
 PROJ.output = "output"
 PROJ.images = "images"
 PROJ.pdf_font = "simhei.ttf"
+PROJ.css_path = ""
+PROJ.js_path = ""
 
 task:default 

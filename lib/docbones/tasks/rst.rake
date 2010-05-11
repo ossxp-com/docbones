@@ -42,11 +42,12 @@ pdf_font=PROJ.pdf_font
   
   desc 'rake all'
   file 'all' => ['html','odt','pdf']
-  
+css_path = PROJ.css_path.strip.empty? ? "" : "--stylesheet-path=#{PROJ.css_path.strip} --link-stylesheet"
+js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
   desc 'rake html'
   task:html => [:rst2html,OUTPUT,HTML]
   file HTML => [RST] do
-    sh "rst2html #{RST} > #{HTML}"
+    sh "rst2html #{RST} #{css_path} #{js_path} > #{HTML}"
     if !images.empty? & test(?e,images)
         sh "cp -a #{images} #{OUTPUT}"
     end
