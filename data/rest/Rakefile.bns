@@ -8,8 +8,8 @@ PROJ.name = "<%= name%>"
 PROJ.index = "<%= index_name%>"
 PROJ.output = "output"
 PROJ.images = "images"
-PROJ.pdf_font = "simhei.ttf"
 PROJ.css_path = ""
 PROJ.js_path = ""
+PROJ.pdf_style = "style/ossxp.style"
 
 task:default 

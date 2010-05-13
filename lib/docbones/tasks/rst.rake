@@ -5,8 +5,7 @@ PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
 PROJ.index = PROJ.index.nil? ? PROJ.index : PROJ.index.strip
 PROJ.output = PROJ.output.nil? ? PROJ.output : PROJ.output.strip
 PROJ.images = PROJ.images.nil? ? PROJ.images : PROJ.images.strip
-PROJ.pdf_font = PROJ.pdf_font.nil? ? PROJ.pdf_font : PROJ.pdf_font.strip
-desc 'clean the output/*'
+desc 'clean the output'
 task:clean do
   sh "rm -rf #{PROJ.output} 2>/dev/null"
 end 
@@ -17,7 +16,6 @@ PDF = PROJ.output+"/"+PROJ.index+".pdf"
 ODT = PROJ.output+"/"+PROJ.index+".odt"
 OUTPUT = PROJ.output
 images=PROJ.images
-pdf_font=PROJ.pdf_font
 js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
 
   task:rst2html do
@@ -29,22 +27,31 @@ js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
         end
     else
         puts '*'*80
-        puts 'please, sudo aptitude install rst2html'
+        puts 'please, sudo aptitude install python-docutils'
         puts '*'*80
         exit 1
     end
   end
 
   task:rst2odt do
-    a = `which rst2odt`.chomp
-    if a == ''
+    if system('which rst2odt >/dev/null 2>&1')
+    else
       puts '*'*80
-      puts 'please, sudo aptitude install rst2odt'
+      puts 'please, sudo aptitude install python-docutils'
       puts '*'*80
-    exit
+      exit 1
     end
   end
 
+  task:rst2pdf do
+    if system('which rst2pdf >/dev/null 2>&1')
+    else
+      puts '*'*80
+      puts 'please, sudo aptitude install rst2pdf'
+      puts '*'*80
+      exit 1
+    end
+  end
   file OUTPUT do
      `mkdir -p #{OUTPUT}`
   end
@@ -55,45 +62,21 @@ css_path = PROJ.css_path.strip.empty? ? "" : "--stylesheet-path=#{PROJ.css_path.
   desc 'rake html'
   task:html => [:rst2html,OUTPUT,HTML]
   file HTML => [RST] do
-    sh "rst2html #{RST} #{css_path} #{js_path} > #{HTML}"
+    sh "rst2html #{RST} #{css_path} #{js_path} #{HTML}"
     if !images.empty? & test(?e,images)
         sh "cp -a #{images} #{OUTPUT}"
     end
   end
-  path= File.join(File.expand_path(File.dirname(__FILE__)),'rst2pdf.py')
-  simhei = '/etc/fop/simhei.ttf'
+pdfstyle = PROJ.pdf_style.strip.empty? ? "" : "-s #{PROJ.pdf_style.strip}"
   desc 'rake pdf'
-  task:pdf =>  [OUTPUT,PDF]
-  file PDF => [RST,simhei] do
-    a=`python #{path} #{RST}`
-    `mv #{RST}.pdf #{PDF} 2>/dev/null`
-    if !a.strip.empty?
-       puts '*'*80
-       puts a   
-       puts '*'*80
-    end
+  task:pdf =>  [:rst2pdf,OUTPUT,PDF]
+  file PDF => [RST] do
+    sh "rst2pdf #{pdfstyle} #{RST} -o #{PDF}"
   end
   desc 'rake odt'
   task:odt => [:rst2odt,OUTPUT,ODT]
   file ODT => [RST] do
     sh "rst2odt #{RST} #{ODT}"
-  end
-  ossxpfond = "/opt/ossxp/fonts/truetype/"+pdf_font
-  debianfond = "/usr/share/fonts/truetype/"+pdf_font
-  file simhei do
-    if !test(?e,'/etc/fop')
-       sh "sudo mkdir -p /etc/fop"
-    end
-    if test(?e,ossxpfond)
-       sh "sudo ln -s #{ossxpfond} #{simhei}"
-    elsif test(?e,debianfond)
-       sh "sudo ln -s #{debianfond} #{simhei}"
-    else
-       puts '*'*80
-       puts "Sorry,the file #{debianfond} does not exist"
-       puts '*'*80
-       exit 1
-    end
   end
 
 version_control_array = ['svn','hg','git']

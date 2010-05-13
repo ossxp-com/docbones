@@ -16,10 +16,10 @@ PROJ = OpenStruct.new(
   :index => nil,
   :name => nil,
   :images => "images",
-  :pdf_font => "simhei.ttf",
   :mm => nil,
   :css_path => "",
-  :js_path => ""
+  :js_path => "",
+  :pdf_style=>""
 )
 
 # Load the other rake files in the tasks folder
