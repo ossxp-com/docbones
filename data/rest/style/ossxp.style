@@ -28,20 +28,27 @@
         "spacing-header": "5mm",
         "spacing-footer": "5mm"
     }, 
+
+    "pageTemplates" : {
+        "coverPage":{
+              "showHeader" : true,
+              "showFooter" : true
+        }
+    },
     "styles" : [
         ["palatino" , { "parent": "bodytext","fontName": "stdFont"} ],
         ["redpalatino" , {"parent": "normal","fontName": "stdFont", "textColor": "red"} ],
-        ["blockquote",{"parent": "bodytext","leftIndent":15}],
         ["base",{"fontSize":12,
                  "leading":15,
                  "bulletFontSize": 10,
                  "textColor": black,
                  "backColor": null,
-                 "borderColor": null
+                 "borderColor": null,
+                 "wordWrap": "CJK"
                 }],
-        ["lineblock",{"parent":bodytext,
-                      "spaceBefore":6
-                     }] 
+        ["footer",   {"parent": normal, "backColor":#EFEFEF', "alignment": TA_CENTER }],
+        ["header",   {"parent": normal, "backColor":#EFEFEF', "alignment": TA_CENTER }],
+        ["lineblock",{"parent":bodytext, "spaceBefore":6 }] 
     ],
     "linkColor": "navy"
 }
