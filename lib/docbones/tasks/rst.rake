@@ -71,7 +71,7 @@ pdfstyle = PROJ.pdf_style.strip.empty? ? "" : "-s #{PROJ.pdf_style.strip}"
   desc 'rake pdf'
   task:pdf =>  [:rst2pdf,OUTPUT,PDF]
   file PDF => [RST] do
-    sh "rst2pdf #{pdfstyle} #{RST} -o #{PDF}"
+    sh "rst2pdf #{pdfstyle} #{RST} -q -o #{PDF}"
   end
   desc 'rake odt'
   task:odt => [:rst2odt,OUTPUT,ODT]
