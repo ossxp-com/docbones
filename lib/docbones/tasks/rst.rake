@@ -17,6 +17,21 @@ ODT = PROJ.output+"/"+PROJ.index+".odt"
 OUTPUT = PROJ.output
 images=PROJ.images
 js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
+css_path = PROJ.css_path.strip.empty? ? "" : "--stylesheet-path=#{PROJ.css_path.strip} --link-stylesheet"
+pdfstyle = PROJ.pdf_style.strip.empty? ? "" : "-s #{PROJ.pdf_style.strip}"
+
+  file RST+".in"
+  file RST => RST+".in" do
+    DOC_REV= ENV["DOC_REV"] ? ENV["DOC_REV"] : "%VERSION%"
+    f = File.open(RST+".in")
+    template = f.read
+    template.gsub!(/^(\.\. \|doc_rev\| replace::).*/,"\\1 #{DOC_REV}")
+    f.close
+    f = File.new(RST, "w")
+    f.print(template)
+    f.close
+    puts "#{RST} created from #{RST}.in"
+  end
 
   task:rst2html do
     if system('which rst2html >/dev/null 2>&1')
@@ -57,8 +72,8 @@ js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
   end
   
   desc 'rake all'
-  file 'all' => ['html','odt','pdf']
-css_path = PROJ.css_path.strip.empty? ? "" : "--stylesheet-path=#{PROJ.css_path.strip} --link-stylesheet"
+  task:all => [:html,:odt,:pdf]
+
   desc 'rake html'
   task:html => [:rst2html,OUTPUT,HTML]
   file HTML => [RST] do
@@ -67,7 +82,7 @@ css_path = PROJ.css_path.strip.empty? ? "" : "--stylesheet-path=#{PROJ.css_path.
         sh "cp -a #{images} #{OUTPUT}"
     end
   end
-pdfstyle = PROJ.pdf_style.strip.empty? ? "" : "-s #{PROJ.pdf_style.strip}"
+
   desc 'rake pdf'
   task:pdf =>  [:rst2pdf,OUTPUT,PDF]
   file PDF => [RST] do
