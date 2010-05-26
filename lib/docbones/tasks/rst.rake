@@ -22,9 +22,11 @@ pdfstyle = PROJ.pdf_style.strip.empty? ? "" : "-s #{PROJ.pdf_style.strip}"
   file RST+".in"
   file RST => RST+".in" do
     DOC_REV= ENV["DOC_REV"] ? ENV["DOC_REV"] : "%VERSION%"
+    DOC_DATE= ENV["DOC_DATE"] ? ENV["DOC_DATE"] : Time.new.strftime("%Y-%m-%d %H:%M:%S")
     f = File.open(RST+".in")
     template = f.read
-    template.gsub!(/^(\.\. \|doc_rev\| replace::).*/,"\\1 #{DOC_REV}")
+    template.gsub!(/^(\.\. \|doc_rev\| replace::).*/, "\\1 #{DOC_REV}")
+    template.gsub!(/^(\.\. \|doc_date\| replace::).*/,"\\1 #{DOC_DATE}")
     f.close
     f = File.new(RST, "w")
     f.print(template)
