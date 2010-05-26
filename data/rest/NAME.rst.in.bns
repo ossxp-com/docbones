@@ -6,18 +6,20 @@ reST 学习手册
 for Docbones
 ------------
 
-:Authors: 蒋鑫, 崔锐
-:Organization: 北京群英汇信息技术有限公司
-:Contact: http://www.ossxp.com/
-:Version: 1.0
-:Date: |date|
-:Copyright: Creative Commons
+
+:作者: 北京群英汇信息技术有限公司
+:网址: http://www.ossxp.com/
+:版本: |doc_rev|
+:日期: |doc_date|
+:版权信息: Creative Commons
 
 .. contents:: 目录
 .. sectnum::
 .. header:: reST 学习手册
 .. footer:: 北京群英汇信息技术有限公司
 .. |date| date:: %Y-%m-%d %H:%M
+.. |doc_rev| replace:: ENV(DOC_REV)
+.. |doc_date| replace:: ENV(DOC_DATE)
 
 
 基本格式说明
