@@ -7,7 +7,6 @@ desc 'clean the output/*'
 task:clean do
   sh "rm -rf #{PROJ.output} 2>/dev/null"
 end
-namespace:db do
 
 XPC = "xsltproc -o"
 HXSL = "tools/html-stylesheet.xsl"
@@ -75,7 +74,7 @@ end
     end
   end
 
-stringparam = "--stringparam root.filename" 
+  stringparam = "--stringparam root.filename" 
   desc 'make html'
   task:html => [:xsltproc,HTML]
   file HTML => [XML] do
@@ -100,4 +99,3 @@ stringparam = "--stringparam root.filename"
   file PDF => [FO] do
     sh "fop -c /etc/fop/fop.xconf #{FO} #{PDF}"
   end
-end

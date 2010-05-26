@@ -9,7 +9,6 @@ desc 'clean the output'
 task:clean do
   sh "rm -rf #{PROJ.output} 2>/dev/null"
 end 
-namespace:rst do
 RST = PROJ.root+"/"+PROJ.index+".rst" 
 HTML = PROJ.output+"/"+PROJ.index+".html"
 PDF = PROJ.output+"/"+PROJ.index+".pdf"
@@ -131,4 +130,3 @@ end
      puts
      puts "pdf url ======>#{PDF}"   
   end
-end

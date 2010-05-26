@@ -4,7 +4,7 @@ require 'rbconfig'
 module Docbones
 
   # :stopdoc:
-  VERSION = '1.2.0'
+  VERSION = '1.2.1'
   PATH = File.expand_path(File.join(File.dirname(__FILE__), '..'))
   HOME = File.expand_path(ENV['HOME'] || ENV['USERPROFILE'])
   DEV_NULL = File.exist?('/dev/null') ? '/dev/null' : 'NUL:'

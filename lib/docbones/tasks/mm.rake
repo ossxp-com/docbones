@@ -11,7 +11,6 @@ string_param = "--stringparam freemind_src"
 if MM.empty?
 
 else
-  namespace:mm do
       desc 'rake html'
       task:html => [OUTPUT]
       task:html => HTMLs
@@ -22,6 +21,5 @@ else
           sh "#{XPC} #{HTMLs} #{string_param} #{MM} #{XSL} #{MM}"
           `cp #{MM} #{X}/#{MM}`      
       end
-  end
 end
 
