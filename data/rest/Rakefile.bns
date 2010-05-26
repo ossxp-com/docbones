@@ -12,4 +12,6 @@ PROJ.css_path = ""
 PROJ.js_path = ""
 PROJ.pdf_style = "style/ossxp.style"
 
-task:default 
+task:default do
+  sh 'rake -T'
+end

@@ -10,5 +10,7 @@ PROJ.output = "output"
 PROJ.images = ""
 PROJ.mm = ""
 
-task:default 
+task:default do
+   sh 'rake -T'
+end
 
