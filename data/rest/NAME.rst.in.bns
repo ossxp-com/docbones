@@ -11,7 +11,7 @@ for Docbones
 :网址: http://www.ossxp.com/
 :版本: |doc_rev|
 :日期: |doc_date|
-:版权信息: Creative Commons
+:版权信息: |Creative Commons|_
 
 .. contents:: 目录
 .. sectnum::
@@ -20,6 +20,9 @@ for Docbones
 .. |date| date:: %Y-%m-%d %H:%M
 .. |doc_rev| replace:: ENV(DOC_REV)
 .. |doc_date| replace:: ENV(DOC_DATE)
+.. |Creative Commons| image:: images/cc-icon.png
+                              :scale: 100
+.. _Creative Commons: http://creativecommons.org/licenses/by-sa/3.0/
 
 
 基本格式说明
@@ -310,18 +313,13 @@ bicapitalized word |RST| every time isn't really necessary for
 图片替换
 ~~~~~~~~
 
-The |biohazard| symbol must be used on containers used to
-dispose of medical waste.
+* 嵌入 |CC| 授权协议图标。
+* 带有链接的 |CC with link|_ 授权协议图标。
 
-.. |biohazard| image:: images/1.gif
+.. |CC| image:: images/cc-icon.png
+.. |CC with link| image:: images/cc-icon.png
+.. _CC with link: http://creativecommons.org/licenses/by-sa/3.0/
 
-* |Red light| means stop.
-* |Green light| means go.
-* |Yellow light| means go really fast.
-
-.. |Red light|    image:: images/2.gif
-.. |Green light|  image:: images/3.gif
-.. |Yellow light| image:: images/4.gif
 
 表格
 ----
@@ -380,27 +378,28 @@ True   True   True
 
  * 嵌入图片
 
-   .. image:: images/1.gif
+   .. image:: images/cc-icon.png
 
  * 带标题的图片
 
-   .. figure:: images/2.gif
+   .. figure:: images/cc-icon.png
 
-      The larch.
+      Creative Commons 授权图标（by-sa）
 
  * 图片缩放
 
-   .. figure:: images/3.gif
+   .. figure:: images/cc-icon.png
       :scale: 50
    
-      The larch.
+      缩放了 50% 的图片
 
  * 图片缩放
 
-   .. image:: images/4.gif
+   .. figure:: images/cc-icon.png
       :height: 11
       :width: 11
 
+      设置了固定高和宽度的图片
 
 警告
 ----

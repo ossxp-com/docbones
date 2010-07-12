@@ -1,3 +1,10 @@
+## Set change log file for your documents
+#CHANGELOG="../debian/changelog"
+#DOC_REV=`head -1 #{CHANGELOG} | sed -e 's/^\S*\s\+(\([0-9]\+:\)\?\(\S\+\)).*/\2/'`
+#DOC_DATESTRING=`grep "^ -- .* <.*> .\\+$" #{CHANGELOG} | head -1 | sed -e "s/^.\\+> \\(.\\+\\)$/\\1/g"`
+#DOC_DATE=`date -d "#{DOC_DATESTRING}" +"%Y-%m-%d %H:%M:%S"`
+#ENV["DOC_REV"]=ENV["DOC_REV"]? ENV["DOC_REV"] : DOC_REV.strip
+#ENV["DOC_DATE"]=ENV["DOC_DATE"]? ENV["DOC_DATE"] : DOC_DATE.strip
 
 require 'docbones'
 source_suffix = '.rst'
