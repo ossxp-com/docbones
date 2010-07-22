@@ -19,7 +19,8 @@ PROJ = OpenStruct.new(
   :mm => nil,
   :css_path => "",
   :js_path => "",
-  :pdf_style=>""
+  :pdf_style=>"",
+  :default_dpi=>300
 )
 
 # Load the other rake files in the tasks folder

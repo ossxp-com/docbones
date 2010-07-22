@@ -18,7 +18,7 @@ PROJ.images = "images"
 PROJ.css_path = ""
 PROJ.js_path = ""
 PROJ.pdf_style = "style/ossxp.style"
-
+PROJ.default_dpi = 300
 task:default do
   sh 'rake -T'
 end

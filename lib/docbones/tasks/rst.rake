@@ -18,7 +18,7 @@ images=PROJ.images
 js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
 css_path = PROJ.css_path.strip.empty? ? "" : "--stylesheet-path=#{PROJ.css_path.strip} --link-stylesheet"
 pdfstyle = PROJ.pdf_style.strip.empty? ? "" : "-s #{PROJ.pdf_style.strip}"
-
+default_dpi = PROJ.default_dpi.nil? ? "" : "--default-dpi #{PROJ.default_dpi}"
   file RST+".in"
   file RST => RST+".in" do
     DOC_REV= ENV["DOC_REV"] ? ENV["DOC_REV"] : "ENV(DOC_REV)"
@@ -87,7 +87,7 @@ pdfstyle = PROJ.pdf_style.strip.empty? ? "" : "-s #{PROJ.pdf_style.strip}"
   desc 'rake pdf'
   task:pdf =>  [:rst2pdf,OUTPUT,PDF]
   file PDF => [RST] do
-    sh "rst2pdf #{pdfstyle} #{RST} -q -o #{PDF}"
+    sh "rst2pdf #{pdfstyle} #{RST} #{default_dpi} -q -o #{PDF}"
   end
   desc 'rake odt'
   task:odt => [:rst2odt,OUTPUT,ODT]
