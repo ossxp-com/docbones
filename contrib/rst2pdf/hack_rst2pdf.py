@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-'''Hack docutils
+'''Hack rst2pdf
 
 Usage: %(program)s [options]
 
@@ -21,8 +21,133 @@ Options:
  
 import sys
 import os
+import re
 import getopt
 from subprocess import Popen, PIPE, STDOUT
+
+SOFTWARE_NAME = "rst2pdf"
+HACK_VERSION = 1
+
+class SoftwareNotInstallError(Exception):
+    """Have not installed needed software."""
+
+class HackFailedError(Exception):
+    """Hack failed."""
+
+class Hack(object):
+
+    def __init__(self):
+        # test software installed location
+        # import pkg_resources and delete it latter, or warning raised.
+        import pkg_resources
+        import rst2pdf
+        if rst2pdf.__file__.endswith(".pyc"): 
+            self.upstream_root = os.path.dirname( os.path.realpath( rst2pdf.__file__[0:-1] ) )
+        else:
+            self.upstream_root = os.path.dirname( os.path.realpath( rst2pdf.__file__ ) )
+        del pkg_resources
+        del rst2pdf
+
+        # patch file location
+        self.patch_root = os.path.join( os.path.dirname(os.path.realpath(__file__)), "patch" )
+ 
+        # test software version and hack version
+        args = [ "rst2pdf", "--version" ]
+        proc = Popen(args, stdout=PIPE, stderr=STDOUT)
+        output = proc.stdout.read().strip()
+        proc.wait()
+        if proc.returncode != 0:
+            raise SoftwareNotInstallError(SOFTWARE_NAME + " not installed.")
+
+        pattern = re.compile("^(.*)\s+\(ossxp\s+(.*)\)")
+        m = pattern.search(output)
+        if m:
+            self.upstream_version = m.group(1).strip()
+            self.hack_version = int(m.group(2).strip())
+        else:
+            self.upstream_version = output.strip()
+            self.hack_version = 0
+
+
+    def upgrade(self, dryrun=False):
+        assert self.hack_version <= HACK_VERSION
+
+        # up-to-date
+        if self.hack_version == HACK_VERSION:
+            return
+
+        elif self.hack_version == 0:
+            # Hack against the latest patch...
+            self.hack_latest( dryrun=dryrun )
+
+        elif self.hack_version < 2:
+            # Unhack previous patch...
+            self.unhack_1( dryrun=dryrun )
+
+            # Hack against the latest patch...
+            self.hack_latest( dryrun=dryrun )
+
+
+    def reverse(self, dryrun=False):
+        assert self.hack_version <= HACK_VERSION
+
+        # non-patch
+        if self.hack_version == 0:
+            return
+
+        elif self.hack_version == 1:
+            # Hack against the latest patch...
+            self.unhack_1( dryrun=dryrun )
+
+
+    def hack_1(self, sudo=False, reverse=False, dryrun=False):
+        self.hack_latest(sudo=sudo, reverse=reverse, dryrun=dryrun)
+
+
+    def unhack_1(self, sudo=False, dryrun=False):
+        self.hack_1(sudo=sudo, reverse=True, dryrun=dryrun)
+
+
+    def hack_latest(self, sudo=False, reverse=False, dryrun=False):
+      
+        if self.upstream_version == "0.14.2":
+            patchfile = os.path.join( self.patch_root, "0.14", "1.patch" )
+        else:
+            patchfile = os.path.join( self.patch_root, "0.14", "1.patch" )
+
+        args = [ "patch", "-d", self.upstream_root, "-p2" ]
+        if sudo:
+            args.insert(0, "sudo")
+
+        if reverse:
+            args.append( "-R" )
+
+        cmdline = "%s --dry-run < %s" % (" ".join(args), patchfile)
+        proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
+        output = proc.stdout.read().rstrip()
+        proc.wait()
+        if proc.returncode != 0:
+            raise HackFailedError( "Hack failed against upstream version %s, with %s" % ( self.upstream_version, patchfile ) )
+
+        if dryrun:
+            return
+
+        cmdline = "%s < %s" % (" ".join(args), patchfile)
+        proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
+        output = proc.stdout.read().rstrip()
+        proc.wait()
+        if proc.returncode != 0:
+            if not sudo:
+                if "Operation not permitted" in output or "Permission denied" in output:
+                    print "Permission denied, try to patch using sudo..."
+                    self.hack_latest(sudo=True, reverse=reverse)
+            else:
+                raise HackFailedError( "Hack failed against upstream version %s, with %s" % ( self.upstream_version, patchfile ) )
+
+
+    def unhack_latest(self, sudo=False, dryrun=False):
+        self.hack_latest(sudo=sudo, reverse=True, dryrun=dryrun)
+
 
 def usage(code=0, msg=''):
     if code:
@@ -34,62 +159,6 @@ def usage(code=0, msg=''):
         print >> fd, msg
     return code
 
-def is_hacked():
-    try:
-        from docutils.writers.html4css1 import Writer
-    except ImportError:
-        print "Error : You have not install python docutils ?!"
-        sys.exit(1)
-
-    try:
-        if 'javascript' in Writer.visitor_attributes:
-            return True
-        else:
-            return False
-    except AttributeError:
-        print "Error : Python docutils too old or too new, unsupport version!"
-        sys.exit(1)
-
-def do_hacks(sudo=False, reverse=False):
-    import docutils
-    if docutils.__file__.endswith(".pyc"): 
-        docutils_location = os.path.realpath( docutils.__file__[0:-1] )
-    else:
-        docutils_location = os.path.realpath( docutils.__file__ )
-    docutils_location = os.path.dirname( docutils_location )
-    patchfile = os.path.join( os.path.dirname(os.path.realpath(__file__)),
-                              "patch.txt" )
-    
-    command = "patch"
-    if sudo:
-        command = "sudo " + command
-
-    options = "-p2"
-    if reverse:
-        options = options + " -R"
-
-    cmdline = "%s %s -d %s < %s" % (command, options, docutils_location, patchfile)
-
-    proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
-    output = proc.stdout.read().rstrip()
-    proc.wait()
-    if proc.returncode != 0:
-        if not sudo:
-            print ""
-            if "Operation not permitted" in output or "Permission denied" in output:
-                print "Permission denied, try to patch using sudo..."
-                do_hacks(sudo=True, reverse=reverse)
-                sys.exit(0)
-
-        print ""
-        print "Hack failed!"
-        print output
-        print ""
-        print "Patch by hands uisng the following command:"
-        print " "*4 + "$",
-        print cmdline
-        sys.exit(1)
-
 
 def main(argv=None):
     if argv is None:
@@ -99,6 +168,7 @@ def main(argv=None):
         opts, args = getopt.getopt( 
                 argv, "hprt", 
                 ["help", "patch", "reverse", "test"])
+
     except getopt.error, msg:
         return usage(1, msg)
 
@@ -114,31 +184,48 @@ def main(argv=None):
         elif opt in ("-t", "--test"):
             cmd = "test"
 
-    hacked = is_hacked()
+    
     if not cmd:
         return usage()
-    elif cmd == "test":
-        if hacked:
-            return 0
-        else:
-            print "Un-hacked!"
-            return 1
+
+    # hack instance
+    hack = Hack()
+
+    if cmd == "test":
+        print "%s version: %s" % (SOFTWARE_NAME, hack.upstream_version)
+
+        if hack.hack_version == HACK_VERSION:
+            print "ossxp hack version %s is uptodate." % HACK_VERSION
+
+        elif hack.hack_version == 0:
+            print "not hack yet."
+            print "hackinging in dry-run mode...\t",
+            try:
+                hack.upgrade( dryrun=True )
+            except HackFailedError:
+                print "FAILED!"
+            else:
+                print "OK"
+
+        elif hack.hack_version < HACK_VERSION:
+            print "ossxp version %s is OUT-OF-DATE, new version: %s" % (
+                self.hack_version,
+                HACK_VERSION,
+                )
+            print "hackinging in dry-run mode...\t",
+            try:
+                hack.upgrade( dryrun=True )
+            except HackFailedError:
+                print "FAILED!"
+            else:
+                print "OK"
+                
     elif cmd == "patch":
-        if not hacked:
-            print "Begin hacking...",
-            do_hacks()
-            print "Hacked."
-        else:
-            print "Already hacked."
-        return 0
+        hack.upgrade()
+
     elif cmd == "reverse":
-        if hacked:
-            print "Reverse hack...",
-            do_hacks(reverse=True)
-            print "Reversed."
-        else:
-            print "Already reversed."
-        return 0
+        hack.reverse()
+
     else:
         return usage(1, "unknown cmd: " + cmd)
 

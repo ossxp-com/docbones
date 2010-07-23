@@ -6,23 +6,38 @@ ignore image dpi
 Signed-off-by: Cui Rui <cuirui@bj.ossxp.com>
 
 ---
+ rst2pdf/__init__.py  |    1 +
  rst2pdf/createpdf.py |    8 ++++++++
  rst2pdf/image.py     |    9 ++++++---
  rst2pdf/styles.py    |    5 +++--
- 3 files changed, 17 insertions(+), 5 deletions(-)
+ 4 files changed, 18 insertions(+), 5 deletions(-)
 
+diff --git a/rst2pdf/__init__.py b/rst2pdf/__init__.py
+index 119cd34..ae4ea60 100644
+--- a/rst2pdf/__init__.py
++++ b/rst2pdf/__init__.py
+@@ -3,6 +3,7 @@ try:
+     import pkg_resources
+     try:
+         version = pkg_resources.get_distribution('rst2pdf').version
++        version += " (ossxp 1)"
+     except pkg_resources.ResolutionError:
+         version = None
+ except ImportError:
 diff --git a/rst2pdf/createpdf.py b/rst2pdf/createpdf.py
 index 535e2f3..01be44f 100644
 --- a/rst2pdf/createpdf.py
 +++ b/rst2pdf/createpdf.py
-@@ -129,6 +129,7 @@ class RstToPdf(object):
-                  footnote_backlinks=True,
-                  inline_footnotes=False,
-                  def_dpi=300,
-+                 ignore_image_dpi=True,
-                  show_frame=False,
-                  highlightlang='python', #This one is only used by sphinx
+@@ -134,7 +134,8 @@ class RstToPdf(object):
                   basedir=os.getcwd(),
+                  splittables=False,
+                  blank_first_page=False,
+-                 breakside='odd'
++                 breakside='odd',
++                 ignore_image_dpi=True
+                  ):
+         self.debugLinesPdf=False
+         self.depth=0
 @@ -161,6 +162,7 @@ class RstToPdf(object):
          self.font_path=font_path
          self.style_path=style_path
@@ -31,14 +46,16 @@ index 535e2f3..01be44f 100644
          self.loadStyles(stylesheets)
              
          self.docutils_languages = {}
-@@ -250,6 +252,7 @@ class RstToPdf(object):
+@@ -250,7 +252,8 @@ class RstToPdf(object):
          self.styles = sty.StyleSheet(styleSheets,
                                       self.font_path,
                                       self.style_path,
-+                                     ignore_image_dpi=self.ignore_image_dpi,
-                                      def_dpi=self.def_dpi)
+-                                     def_dpi=self.def_dpi)
++                                     def_dpi=self.def_dpi,
++                                     ignore_image_dpi=self.ignore_image_dpi)
  
      def style_language(self, style):
+         """Return language corresponding to this style."""
 @@ -1046,6 +1049,10 @@ def parse_commandline():
          default=def_dpi,
          help='DPI for objects sized in pixels. Default=%d'%def_dpi)
@@ -50,14 +67,16 @@ index 535e2f3..01be44f 100644
      parser.add_option('--show-frame-boundary', dest='show_frame',
          action='store_true', default=False,
          help='Show frame borders (only useful for debugging). Default=False')
-@@ -1207,6 +1214,7 @@ def main(args=None):
-         footnote_backlinks=options.footnote_backlinks,
-         inline_footnotes=options.inline_footnotes,
-         def_dpi=int(options.def_dpi),
-+        ignore_image_dpi=options.ignore_image_dpi,
-         basedir=options.basedir,
+@@ -1211,7 +1218,8 @@ def main(args=None):
          show_frame=options.show_frame,
          splittables=options.splittables,
+         blank_first_page=options.blank_first_page,
+-        breakside=options.breakside
++        breakside=options.breakside,
++        ignore_image_dpi=options.ignore_image_dpi
+         ).createPdf(text=options.infile.read(),
+                     source_path=options.infile.name,
+                     output=options.outfile,
 diff --git a/rst2pdf/image.py b/rst2pdf/image.py
 index 913df50..b08527c 100644
 --- a/rst2pdf/image.py
@@ -101,16 +120,14 @@ index 3924132..e6ed218 100644
                  yield name, styles[name]
  
 -    def __init__(self, flist, font_path=None, style_path=None, def_dpi=300):
-+    def __init__(self, flist, font_path=None, style_path=None,ignore_image_dpi=True,def_dpi=300):
++    def __init__(self, flist, font_path=None, style_path=None, def_dpi=300, ignore_image_dpi=True):
          log.info('Using stylesheets: %s' % ','.join(flist))
          # find base path
          if hasattr(sys, 'frozen'):
-@@ -91,7 +91,8 @@ class StyleSheet(object):
-         # be loaded first
+@@ -92,6 +92,7 @@ class StyleSheet(object):
          flist = [join(self.PATH, 'styles', 'styles.style'),
                  join(self.PATH, 'styles', 'default.style')] + flist
--
-+        
+
 +        self.ignore_image_dpi=ignore_image_dpi
          self.def_dpi=def_dpi
          if font_path is None:
