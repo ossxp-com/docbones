@@ -1,0 +1,119 @@
+From: Cui Rui <cuirui@bj.ossxp.com>
+Subject: [PATCH] ignore image dpi
+
+ignore image dpi
+
+Signed-off-by: Cui Rui <cuirui@bj.ossxp.com>
+
+---
+ rst2pdf/createpdf.py |    8 ++++++++
+ rst2pdf/image.py     |    9 ++++++---
+ rst2pdf/styles.py    |    5 +++--
+ 3 files changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/rst2pdf/createpdf.py b/rst2pdf/createpdf.py
+index 535e2f3..01be44f 100644
+--- a/rst2pdf/createpdf.py
++++ b/rst2pdf/createpdf.py
+@@ -129,6 +129,7 @@ class RstToPdf(object):
+                  footnote_backlinks=True,
+                  inline_footnotes=False,
+                  def_dpi=300,
++                 ignore_image_dpi=True,
+                  show_frame=False,
+                  highlightlang='python', #This one is only used by sphinx
+                  basedir=os.getcwd(),
+@@ -161,6 +162,7 @@ class RstToPdf(object):
+         self.font_path=font_path
+         self.style_path=style_path
+         self.def_dpi=def_dpi
++        self.ignore_image_dpi=ignore_image_dpi
+         self.loadStyles(stylesheets)
+             
+         self.docutils_languages = {}
+@@ -250,6 +252,7 @@ class RstToPdf(object):
+         self.styles = sty.StyleSheet(styleSheets,
+                                      self.font_path,
+                                      self.style_path,
++                                     ignore_image_dpi=self.ignore_image_dpi,
+                                      def_dpi=self.def_dpi)
+ 
+     def style_language(self, style):
+@@ -1046,6 +1049,10 @@ def parse_commandline():
+         default=def_dpi,
+         help='DPI for objects sized in pixels. Default=%d'%def_dpi)
+ 
++    parser.add_option('--ignore-image-dpi', dest='ignore_image_dpi',
++        action='store_false', default=True,
++        help='Ignore the image dpi. Default=True')
++
+     parser.add_option('--show-frame-boundary', dest='show_frame',
+         action='store_true', default=False,
+         help='Show frame borders (only useful for debugging). Default=False')
+@@ -1207,6 +1214,7 @@ def main(args=None):
+         footnote_backlinks=options.footnote_backlinks,
+         inline_footnotes=options.inline_footnotes,
+         def_dpi=int(options.def_dpi),
++        ignore_image_dpi=options.ignore_image_dpi,
+         basedir=options.basedir,
+         show_frame=options.show_frame,
+         splittables=options.splittables,
+diff --git a/rst2pdf/image.py b/rst2pdf/image.py
+index 913df50..b08527c 100644
+--- a/rst2pdf/image.py
++++ b/rst2pdf/image.py
+@@ -259,6 +259,7 @@ class MyImage (Flowable):
+ 
+         # Find the image size in pixels:
+         kind = 'direct'
++        ign_dpi=client.styles.ignore_image_dpi
+         xdpi, ydpi = client.styles.def_dpi, client.styles.def_dpi
+         extension = imgname.split('.')[-1].lower()
+         if extension in ['svg','svgz'] and SVGImage.available():
+@@ -299,7 +300,8 @@ class MyImage (Flowable):
+                     img = LazyImports.PILImage.open(imgname)
+                     img.load()
+                     iw, ih = img.size
+-                    xdpi, ydpi = img.info.get('dpi', (xdpi, ydpi))
++                    if not ign_dpi:
++                       xdpi, ydpi = img.info.get('dpi', (xdpi, ydpi))
+                     keeptrying = False
+                 except IOError: # PIL throws this when it's a broken/unknown image
+                     pass
+@@ -309,8 +311,9 @@ class MyImage (Flowable):
+                 ih = img.size().height()
+                 density=img.density() 
+                 # The density is in pixelspercentimeter (!?)
+-                xdpi=density.width()*2.54
+-                ydpi=density.height()*2.54
++                if not ign_dpi:
++                   xdpi=density.width()*2.54
++                   ydpi=density.height()*2.54
+                 keeptrying = False
+             if keeptrying:
+                 log.error("The image (%s, %s) is broken or in an unknown format"
+diff --git a/rst2pdf/styles.py b/rst2pdf/styles.py
+index 3924132..e6ed218 100644
+--- a/rst2pdf/styles.py
++++ b/rst2pdf/styles.py
+@@ -77,7 +77,7 @@ class StyleSheet(object):
+                 name = names.pop()
+                 yield name, styles[name]
+ 
+-    def __init__(self, flist, font_path=None, style_path=None, def_dpi=300):
++    def __init__(self, flist, font_path=None, style_path=None,ignore_image_dpi=True,def_dpi=300):
+         log.info('Using stylesheets: %s' % ','.join(flist))
+         # find base path
+         if hasattr(sys, 'frozen'):
+@@ -91,7 +91,8 @@ class StyleSheet(object):
+         # be loaded first
+         flist = [join(self.PATH, 'styles', 'styles.style'),
+                 join(self.PATH, 'styles', 'default.style')] + flist
+-
++        
++        self.ignore_image_dpi=ignore_image_dpi
+         self.def_dpi=def_dpi
+         if font_path is None:
+             font_path=[]
+-- 
+tg: (a24ca2f..) t/ignore_image_dpi (depends on: master)
