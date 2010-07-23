@@ -1,10 +1,11 @@
 ## Set change log file for your documents
 #CHANGELOG="../debian/changelog"
-#DOC_REV=`head -1 #{CHANGELOG} | sed -e 's/^\S*\s\+(\([0-9]\+:\)\?\(\S\+\)).*/\2/'`
-#DOC_DATESTRING=`grep "^ -- .* <.*> .\\+$" #{CHANGELOG} | head -1 | sed -e "s/^.\\+> \\(.\\+\\)$/\\1/g"`
-#DOC_DATE=`date -d "#{DOC_DATESTRING}" +"%Y-%m-%d %H:%M:%S"`
-#ENV["DOC_REV"]=ENV["DOC_REV"]? ENV["DOC_REV"] : DOC_REV.strip
-#ENV["DOC_DATE"]=ENV["DOC_DATE"]? ENV["DOC_DATE"] : DOC_DATE.strip
+#
+#doc_rev=`head -1 #{CHANGELOG} | sed -e "s/^\\S*\\s\\+(\\([0-9]*:\\)\\?\\(\\S\\+\\)).*/\\2/"`
+#doc_datestring=`grep "^ -- .* <.*>  .\\+$" #{CHANGELOG} | head -1 | sed -e "s/^.\\+>  \\(.\\+\\)$/\\1/g"`
+#doc_date=`date -d "#{doc_datestring}" +"%Y-%m-%d %H:%M:%S"`
+#ENV["DOC_REV"]=ENV["DOC_REV"]? ENV["DOC_REV"] : doc_rev.strip
+#ENV["DOC_DATE"]=ENV["DOC_DATE"]? ENV["DOC_DATE"] : doc_date.strip
 
 require 'docbones'
 source_suffix = '.rst'
@@ -15,10 +16,11 @@ PROJ.name = "<%= name%>"
 PROJ.index = "<%= index_name%>"
 PROJ.output = "output"
 PROJ.images = "images"
-PROJ.css_path = ""
-PROJ.js_path = ""
-PROJ.pdf_style = "style/ossxp.style"
-PROJ.default_dpi = 300
+PROJ.css_path = "/stylesheet/lightbox/nf.lightbox.css,/stylesheet/ossxp/doc.css"
+PROJ.js_path = "/javascript/jquery/1.4.2.js,/javascript/lightbox/nf.lightbox.js,/javascript/lightbox/load-nf.lightbox.js"
+PROJ.pdf_style = "/opt/ossxp/conf/pdf/ossxp.style"
+PROJ.default_dpi = 150
+
 task:default do
   sh 'rake -T'
 end

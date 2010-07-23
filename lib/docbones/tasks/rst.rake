@@ -61,6 +61,9 @@ default_dpi = PROJ.default_dpi.nil? ? "" : "--default-dpi #{PROJ.default_dpi}"
 
   task:rst2pdf do
     if system('which rst2pdf >/dev/null 2>&1')
+      if not system("python #{PATH}/contrib/rst2pdf/hack_rst2pdf.py -p")
+          exit 1
+      end
     else
       puts '*'*80
       puts 'please, sudo aptitude install rst2pdf'
