@@ -26,7 +26,7 @@ import getopt
 from subprocess import Popen, PIPE, STDOUT
 
 SOFTWARE_NAME = "rst2pdf"
-HACK_VERSION = 1
+HACK_VERSION = 2
 
 class SoftwareNotInstallError(Exception):
     """Have not installed needed software."""
@@ -39,12 +39,19 @@ class Hack(object):
     def __init__(self):
         # test software installed location
         # import pkg_resources and delete it latter, or warning raised.
+        self.upstream_root = {}
+
         import pkg_resources
         import rst2pdf
+        import reportlab
         if rst2pdf.__file__.endswith(".pyc"): 
-            self.upstream_root = os.path.dirname( os.path.realpath( rst2pdf.__file__[0:-1] ) )
+            self.upstream_root["rst2pdf"] = os.path.dirname( os.path.realpath( rst2pdf.__file__[0:-1] ) )
         else:
-            self.upstream_root = os.path.dirname( os.path.realpath( rst2pdf.__file__ ) )
+            self.upstream_root["rst2pdf"] = os.path.dirname( os.path.realpath( rst2pdf.__file__ ) )
+        if reportlab.__file__.endswith(".pyc"): 
+            self.upstream_root["reportlab"] = os.path.dirname( os.path.realpath( reportlab.__file__[0:-1] ) )
+        else:
+            self.upstream_root["reportlab"] = os.path.dirname( os.path.realpath( reportlab.__file__ ) )
         del pkg_resources
         del rst2pdf
 
@@ -95,58 +102,68 @@ class Hack(object):
         if self.hack_version == 0:
             return
 
-        elif self.hack_version == 1:
-            # Hack against the latest patch...
-            self.unhack_1( dryrun=dryrun )
+        # Hack against the latest patch...
+        self.hack_latest(reverse=True, dryrun=dryrun, version=self.hack_version)
 
 
     def hack_1(self, sudo=False, reverse=False, dryrun=False):
-        self.hack_latest(sudo=sudo, reverse=reverse, dryrun=dryrun)
+        self.hack_latest(sudo=sudo, reverse=reverse, dryrun=dryrun, version=1)
 
 
     def unhack_1(self, sudo=False, dryrun=False):
         self.hack_1(sudo=sudo, reverse=True, dryrun=dryrun)
 
 
-    def hack_latest(self, sudo=False, reverse=False, dryrun=False):
-      
+    def hack_latest(self, sudo=False, reverse=False, dryrun=False, version=HACK_VERSION):
+        patches = {}
         if self.upstream_version == "0.14.2":
-            patchfile = os.path.join( self.patch_root, "0.14", "1.patch" )
+            patches["rst2pdf"]   = os.path.join( self.patch_root, "0.14", "%d/rst2pdf.patch" % version )
+            patches["reportlab"] = os.path.join( self.patch_root, "0.14", "%d/reportlab.patch" % version )
         else:
-            patchfile = os.path.join( self.patch_root, "0.14", "1.patch" )
+            patches["rst2pdf"]   = os.path.join( self.patch_root, "0.14", "%d/rst2pdf.patch" % version )
+            patches["reportlab"] = os.path.join( self.patch_root, "0.14", "%d/reportlab.patch" % version )
 
-        args = [ "patch", "-d", self.upstream_root, "-p2" ]
+        #"-d", self.upstream_root, 
+        args = [ "patch", "-p2" ]
         if sudo:
             args.insert(0, "sudo")
 
         if reverse:
             args.append( "-R" )
 
-        cmdline = "%s --dry-run < %s" % (" ".join(args), patchfile)
-        proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
-        output = proc.stdout.read().rstrip()
-        proc.wait()
-        if proc.returncode != 0:
-            raise HackFailedError( "Hack failed against upstream version %s, with %s" % ( self.upstream_version, patchfile ) )
+        # [ "reportlab", "rst2pdf" ]
+        for key in self.upstream_root.keys():
+            cmdline = "%s -d %s --dry-run < %s" % (" ".join(args), 
+                                                 self.upstream_root[key],
+                                                 patches[key])
+            proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
+            output = proc.stdout.read().rstrip()
+            proc.wait()
+            if proc.returncode != 0:
+                raise HackFailedError( "Hack failed against upstream version %s!\n\tAgainst   : %s\n\tpatch file: %s\n\tcmdline   :%s" % ( self.upstream_version, self.upstream_root[key], patches[key], cmdline ) )
 
         if dryrun:
             return
 
-        cmdline = "%s < %s" % (" ".join(args), patchfile)
-        proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
-        output = proc.stdout.read().rstrip()
-        proc.wait()
-        if proc.returncode != 0:
-            if not sudo:
-                if "Operation not permitted" in output or "Permission denied" in output:
-                    print "Permission denied, try to patch using sudo..."
-                    self.hack_latest(sudo=True, reverse=reverse)
-            else:
-                raise HackFailedError( "Hack failed against upstream version %s, with %s" % ( self.upstream_version, patchfile ) )
+        # [ "reportlab", "rst2pdf" ]
+        for key in self.upstream_root.keys():
+            cmdline = "%s -d %s < %s" % (" ".join(args), 
+                                         self.upstream_root[key],
+                                         patches[key])
+            proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
+            output = proc.stdout.read().rstrip()
+            proc.wait()
+            if proc.returncode != 0:
+                if not sudo:
+                    if "Operation not permitted" in output or "Permission denied" in output:
+                        print "Permission denied, try to patch using sudo..."
+                        cmdline = "sudo "+cmdline
+                        proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
+                        output = proc.stdout.read().rstrip()
+                        proc.wait()
+                else:
+                    raise HackFailedError( "Hack failed against upstream version %s!\n\tAgainst   : %s\n\tpatch file: %s\n\tcmdline   :%s" % ( self.upstream_version, self.upstream_root[key], patches[key], cmdline ) )
 
-
-    def unhack_latest(self, sudo=False, dryrun=False):
-        self.hack_latest(sudo=sudo, reverse=True, dryrun=dryrun)
 
 
 def usage(code=0, msg=''):
@@ -196,6 +213,14 @@ def main(argv=None):
 
         if hack.hack_version == HACK_VERSION:
             print "ossxp hack version %s is uptodate." % HACK_VERSION
+            print "unpatch in dry-run mode...\t",
+            try:
+                hack.reverse( dryrun=True )
+            except HackFailedError:
+                print "FAILED!"
+            else:
+                print "OK"
+
 
         elif hack.hack_version == 0:
             print "not hack yet."
@@ -209,7 +234,7 @@ def main(argv=None):
 
         elif hack.hack_version < HACK_VERSION:
             print "ossxp version %s is OUT-OF-DATE, new version: %s" % (
-                self.hack_version,
+                hack.hack_version,
                 HACK_VERSION,
                 )
             print "hackinging in dry-run mode...\t",

@@ -1,0 +1,20 @@
+diff --git a/reportlab/platypus/tables.py b/reportlab/platypus/tables.py
+index 1575f4e..c398fba 100755
+--- a/reportlab/platypus/tables.py
++++ b/reportlab/platypus/tables.py
+@@ -653,7 +653,14 @@ class Table(Flowable):
+                 for rowNo in xrange(self._nrows):
+                     value = self._cellvalues[rowNo][colNo]
+                     style = self._cellStyles[rowNo][colNo]
+-                    new = elementWidth(value,style)+style.leftPadding+style.rightPadding
++                    spacebefore = 0
++                    for x in range(colNo):
++                        colbefore = self._cellvalues[rowNo][x]
++                        if hasattr(colbefore,'getSpaceBefore'):
++                           spacebefore += (W[x]+colbefore.getSpaceBefore())
++                    widthByAllwords = elementWidth(value,style)-spacebefore-style.leftPadding-style.rightPadding
++                    widthByAvailWidth = availWidth-style.leftPadding-style.rightPadding-spacebefore
++                    new = widthByAllwords>widthByAvailWidth and widthByAvailWidth or widthByAllwords
+                     final = max(current, new)
+                     current = new
+                     siz = siz and self._canGetWidth(value) # irrelevant now?
