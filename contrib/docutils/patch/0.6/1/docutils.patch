@@ -1,8 +1,14 @@
+commit 5c2dacd19dcad21c8ff37c1f7152d02f29e6e1f1
+Author: Jiang Xin <jiangxin@ossxp.com>
+Date:   Sat Jul 24 10:37:36 2010 +0800
+
+    ossxp hack version 1
+
 diff --git a/docutils/utils.py b/docutils/utils.py
-index 492e383..644c324 100644
+index c75536e..4d7e05b 100644
 --- a/docutils/utils.py
 +++ b/docutils/utils.py
-@@ -502,6 +502,16 @@ def get_stylesheet_list(settings):
+@@ -500,6 +500,16 @@ def get_stylesheet_list(settings):
      else:
          return []
  
@@ -20,7 +26,7 @@ index 492e383..644c324 100644
      """
      Return whether or not to trim footnote space.
 diff --git a/docutils/writers/html4css1/__init__.py b/docutils/writers/html4css1/__init__.py
-index eca4f1b..9ef694b 100644
+index eca4f1b..8204e94 100644
 --- a/docutils/writers/html4css1/__init__.py
 +++ b/docutils/writers/html4css1/__init__.py
 @@ -63,6 +63,10 @@ class Writer(writers.Writer):
