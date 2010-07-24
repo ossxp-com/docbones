@@ -19,14 +19,20 @@ Options:
             Test whether already hacked.
 '''
  
+_NAME_          = "docutils"
+_HACK_VERSION_  = 2
+_PATCHES_       = {
+                    "docutils" : {
+                        "default"   : [ "%(root)s", "0.6", "%(version)d", "docutils.patch" ],
+                        "0.6"       : [ "%(root)s", "0.6", "%(version)d", "docutils.patch" ],
+                        },
+                  }
+
 import sys
 import os
 import re
 import getopt
 from subprocess import Popen, PIPE, STDOUT
-
-SOFTWARE_NAME = "docutils"
-HACK_VERSION = 2
 
 class SoftwareNotInstallError(Exception):
     """Have not installed needed software."""
@@ -59,16 +65,16 @@ class Hack(object):
         output = proc.stdout.read().strip()
         proc.wait()
         if proc.returncode != 0:
-            raise SoftwareNotInstallError(SOFTWARE_NAME + " not installed.")
+            raise SoftwareNotInstallError(_NAME_ + " not installed.")
 
-        # rst2html (Docutils 0.6 [release, ossxp hack 2], Python 2.6.5+, on linux2)
+        # rst2html (Docutils x.y [release, ossxp hack 2], Python 2.6.5+, on linux2)
         pattern = re.compile("^.*\(Docutils (.*)\s+\[.*?(?:, ossxp hack (.*))?\].*$")
         m = pattern.search(output)
         if m:
             self.upstream_version = m.group(1).strip()
             self.hack_version = m.group(2) and int(m.group(2).strip()) or 0
         else:
-            raise SoftwareNotInstallError(SOFTWARE_NAME + " installed can not detect hack revision.")
+            raise SoftwareNotInstallError(_NAME_ + " installed can not detect hack revision.")
 
         # Hack v1 can not be detected from rst2html --version
         if self.hack_version == 0:
@@ -85,10 +91,10 @@ class Hack(object):
 
 
     def upgrade(self, dryrun=False):
-        assert self.hack_version <= HACK_VERSION
+        assert self.hack_version <= _HACK_VERSION_
 
         # up-to-date
-        if self.hack_version == HACK_VERSION:
+        if self.hack_version == _HACK_VERSION_:
             return
 
         elif self.hack_version == 0:
@@ -109,7 +115,7 @@ class Hack(object):
 
 
     def reverse(self, dryrun=False):
-        assert self.hack_version <= HACK_VERSION
+        assert self.hack_version <= _HACK_VERSION_
 
         # non-patch
         if self.hack_version == 0:
@@ -124,12 +130,16 @@ class Hack(object):
         self.hack_latest( reverse=True, dryrun=dryrun, version=1 )
 
 
-    def hack_latest(self, reverse=False, dryrun=False, version=HACK_VERSION):
+    def hack_latest(self, reverse=False, dryrun=False, version=_HACK_VERSION_):
         patches = {}
-        if self.upstream_version == "0.6":
-            patches["docutils"]   = os.path.join( self.patch_root, "0.6", "%d/docutils.patch" % version )
-        else:
-            patches["docutils"]   = os.path.join( self.patch_root, "0.6", "%d/docutils.patch" % version )
+        for key in _PATCHES_.keys():
+            dirs = _PATCHES_[ key ].get( self.upstream_version, _PATCHES_[ key ][ "default" ] )
+            patches[key] = os.path.join( *[ k % {
+                                                'root':self.patch_root,
+                                                'version':version,
+                                                } for k in dirs ] )
+            if not os.path.exists( patches[ key ] ):
+                raise HackFailedError( "Patch file not found: %s" % patches[key] )
 
         #"-d", self.upstream_root, 
         args = [ "patch", "-p2" ]
@@ -219,10 +229,10 @@ def main(argv=None):
     hack = Hack()
 
     if cmd == "test":
-        print "%s version: %s" % (SOFTWARE_NAME, hack.upstream_version)
+        print "%s version: %s" % (_NAME_, hack.upstream_version)
 
-        if hack.hack_version == HACK_VERSION:
-            print "ossxp hack (ver %d) is uptodate." % HACK_VERSION
+        if hack.hack_version == _HACK_VERSION_:
+            print "ossxp hack (ver %d) is uptodate." % _HACK_VERSION_
             print "\ntest only: unpatch in dry-run mode...\t",
             try:
                 hack.reverse( dryrun=True )
@@ -242,10 +252,10 @@ def main(argv=None):
             else:
                 print "OK"
 
-        elif hack.hack_version < HACK_VERSION:
+        elif hack.hack_version < _HACK_VERSION_:
             print "ossxp version %s is OUT-OF-DATE, new version: %s" % (
                 hack.hack_version,
-                HACK_VERSION,
+                _HACK_VERSION_,
                 )
             print "\ntest only: reverse old patch in dry-run mode...\t",
             try:

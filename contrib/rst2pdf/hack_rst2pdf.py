@@ -18,15 +18,26 @@ Options:
     -t|--test
             Test whether already hacked.
 '''
- 
+
+_NAME_          = "rst2pdf"
+_HACK_VERSION_  = 2
+_PATCHES_       = {
+                    "rst2pdf" : {
+                        "default"   : [ "%(root)s", "0.14", "%(version)d", "rst2pdf.patch" ],
+                        "0.14.2"    : [ "%(root)s", "0.14", "%(version)d", "rst2pdf.patch" ],
+                        },
+
+                    "reportlab" : {
+                        "default"   : [ "%(root)s", "0.14", "%(version)d", "reportlab.patch" ],
+                        "0.14.2"    : [ "%(root)s", "0.14", "%(version)d", "reportlab.patch" ],
+                        },
+                  }
+
 import sys
 import os
 import re
 import getopt
 from subprocess import Popen, PIPE, STDOUT
-
-SOFTWARE_NAME = "rst2pdf"
-HACK_VERSION = 2
 
 class SoftwareNotInstallError(Exception):
     """Have not installed needed software."""
@@ -64,7 +75,7 @@ class Hack(object):
         output = proc.stdout.read().strip()
         proc.wait()
         if proc.returncode != 0:
-            raise SoftwareNotInstallError(SOFTWARE_NAME + " not installed.")
+            raise SoftwareNotInstallError(_NAME_ + " not installed.")
 
         pattern = re.compile("^(.*)\s+\(ossxp\s+(.*)\)")
         m = pattern.search(output)
@@ -77,10 +88,10 @@ class Hack(object):
 
 
     def upgrade(self, dryrun=False):
-        assert self.hack_version <= HACK_VERSION
+        assert self.hack_version <= _HACK_VERSION_
 
         # up-to-date
-        if self.hack_version == HACK_VERSION:
+        if self.hack_version == _HACK_VERSION_:
             return
 
         elif self.hack_version == 0:
@@ -101,7 +112,7 @@ class Hack(object):
 
 
     def reverse(self, dryrun=False):
-        assert self.hack_version <= HACK_VERSION
+        assert self.hack_version <= _HACK_VERSION_
 
         # non-patch
         if self.hack_version == 0:
@@ -116,14 +127,16 @@ class Hack(object):
         self.hack_latest( reverse=True, dryrun=dryrun, version=1 )
 
 
-    def hack_latest(self, reverse=False, dryrun=False, version=HACK_VERSION):
+    def hack_latest(self, reverse=False, dryrun=False, version=_HACK_VERSION_):
         patches = {}
-        if self.upstream_version == "0.14.2":
-            patches["rst2pdf"]   = os.path.join( self.patch_root, "0.14", "%d/rst2pdf.patch" % version )
-            patches["reportlab"] = os.path.join( self.patch_root, "0.14", "%d/reportlab.patch" % version )
-        else:
-            patches["rst2pdf"]   = os.path.join( self.patch_root, "0.14", "%d/rst2pdf.patch" % version )
-            patches["reportlab"] = os.path.join( self.patch_root, "0.14", "%d/reportlab.patch" % version )
+        for key in _PATCHES_.keys():
+            dirs = _PATCHES_[ key ].get( self.upstream_version, _PATCHES_[ key ][ "default" ] )
+            patches[key] = os.path.join( *[ k % {
+                                                'root':self.patch_root,
+                                                'version':version,
+                                                } for k in dirs ] )
+            if not os.path.exists( patches[ key ] ):
+                raise HackFailedError( "Patch file not found: %s" % patches[key] )
 
         #"-d", self.upstream_root, 
         args = [ "patch", "-p2" ]
@@ -213,10 +226,10 @@ def main(argv=None):
     hack = Hack()
 
     if cmd == "test":
-        print "%s version: %s" % (SOFTWARE_NAME, hack.upstream_version)
+        print "%s version: %s" % (_NAME_, hack.upstream_version)
 
-        if hack.hack_version == HACK_VERSION:
-            print "ossxp hack (ver %d) is uptodate." % HACK_VERSION
+        if hack.hack_version == _HACK_VERSION_:
+            print "ossxp hack (ver %d) is uptodate." % _HACK_VERSION_
             print "\ntest only: unpatch in dry-run mode...\t",
             try:
                 hack.reverse( dryrun=True )
@@ -236,10 +249,10 @@ def main(argv=None):
             else:
                 print "OK"
 
-        elif hack.hack_version < HACK_VERSION:
+        elif hack.hack_version < _HACK_VERSION_:
             print "ossxp version %s is OUT-OF-DATE, new version: %s" % (
                 hack.hack_version,
-                HACK_VERSION,
+                _HACK_VERSION_,
                 )
             print "\ntest only: reverse old patch in dry-run mode...\t",
             try:
