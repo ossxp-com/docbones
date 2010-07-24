@@ -36,10 +36,8 @@ default_dpi = PROJ.default_dpi.nil? ? "" : "--default-dpi #{PROJ.default_dpi}"
 
   task:rst2html do
     if system('which rst2html >/dev/null 2>&1')
-        if not js_path.empty? and not system("python #{PATH}/contrib/docutils/hack_docutils.py -t")
-            if not system("python #{PATH}/contrib/docutils/hack_docutils.py -p")
-                exit 1
-            end
+        if not system("python #{PATH}/contrib/docutils/hack_docutils.py -p")
+            exit 1
         end
     else
         puts '*'*80
