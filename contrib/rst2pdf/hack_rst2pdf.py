@@ -150,14 +150,14 @@ class Hack(object):
             cmdline = "%s -d %s < %s" % (" ".join(args), 
                                          self.upstream_root[key],
                                          patches[key])
-            print "Patching '%s' ...\t" % key,
+            print "%s '%s' (ver %d) ...\t" % (reverse and "Un-patching" or "Patching", key, version),
             proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
             output = proc.stdout.read().rstrip()
             proc.wait()
             if proc.returncode != 0 and not sudo:
                 if "Operation not permitted" in output or "Permission denied" in output:
                     print "\n\t*** No enough permissions, try to use sudo, you may ask for password. ***"
-                    print "\tPatch '%s' with sudo...\t" % key,
+                    print "\t%s '%s' (ver %d) with sudo...\t" % (reverse and "Un-patching" or "Patching", key, version),
                     cmdline = "sudo "+cmdline
                     proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
                     output = proc.stdout.read().rstrip()
