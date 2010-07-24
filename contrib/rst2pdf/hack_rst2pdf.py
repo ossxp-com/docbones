@@ -87,9 +87,14 @@ class Hack(object):
             # Hack against the latest patch...
             self.hack_latest( dryrun=dryrun )
 
-        elif self.hack_version < 2:
+        else:
             # Unhack previous patch...
-            self.unhack_1( dryrun=dryrun )
+            fn_name = "unhack_%d" % self.hack_version
+            try:
+                fn = getattr(self, fn_name)
+                fn( dryrun=dryrun )
+            except AttributeError:
+                self.reverse( dryrun=dryrun )
 
             # Hack against the latest patch...
             self.hack_latest( dryrun=dryrun )
@@ -103,18 +108,15 @@ class Hack(object):
             return
 
         # Hack against the latest patch...
-        self.hack_latest(reverse=True, dryrun=dryrun, version=self.hack_version)
+        self.hack_latest( reverse=True, dryrun=dryrun, version=self.hack_version )
 
 
-    def hack_1(self, sudo=False, reverse=False, dryrun=False):
-        self.hack_latest(sudo=sudo, reverse=reverse, dryrun=dryrun, version=1)
+    # obsolete, for reference only.
+    def unhack_1(self, dryrun=False):
+        self.hack_latest( reverse=True, dryrun=dryrun, version=1 )
 
 
-    def unhack_1(self, sudo=False, dryrun=False):
-        self.hack_1(sudo=sudo, reverse=True, dryrun=dryrun)
-
-
-    def hack_latest(self, sudo=False, reverse=False, dryrun=False, version=HACK_VERSION):
+    def hack_latest(self, reverse=False, dryrun=False, version=HACK_VERSION):
         patches = {}
         if self.upstream_version == "0.14.2":
             patches["rst2pdf"]   = os.path.join( self.patch_root, "0.14", "%d/rst2pdf.patch" % version )
@@ -125,8 +127,6 @@ class Hack(object):
 
         #"-d", self.upstream_root, 
         args = [ "patch", "-p2" ]
-        if sudo:
-            args.insert(0, "sudo")
 
         if reverse:
             args.append( "-R" )
@@ -154,9 +154,9 @@ class Hack(object):
             proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
             output = proc.stdout.read().rstrip()
             proc.wait()
-            if proc.returncode != 0 and not sudo:
+            if proc.returncode != 0:
                 if "Operation not permitted" in output or "Permission denied" in output:
-                    print "\n\t*** No enough permissions, try to use sudo, you may ask for password. ***"
+                    print "\n\t*** No enough permissions, try to use sudo. You may ask for PASSWORD. ***"
                     print "\t%s '%s' (ver %d) with sudo...\t" % (reverse and "Un-patching" or "Patching", key, version),
                     cmdline = "sudo "+cmdline
                     proc = Popen(cmdline, stdout=PIPE, stderr=STDOUT, shell=True)
@@ -216,8 +216,8 @@ def main(argv=None):
         print "%s version: %s" % (SOFTWARE_NAME, hack.upstream_version)
 
         if hack.hack_version == HACK_VERSION:
-            print "ossxp hack version %s is uptodate." % HACK_VERSION
-            print "unpatch in dry-run mode...\t",
+            print "ossxp hack (ver %d) is uptodate." % HACK_VERSION
+            print "\ntest only: unpatch in dry-run mode...\t",
             try:
                 hack.reverse( dryrun=True )
             except HackFailedError:
@@ -228,7 +228,7 @@ def main(argv=None):
 
         elif hack.hack_version == 0:
             print "not hack yet."
-            print "hackinging in dry-run mode...\t",
+            print "\ntest only: hackinging in dry-run mode...\t",
             try:
                 hack.upgrade( dryrun=True )
             except HackFailedError:
@@ -241,13 +241,15 @@ def main(argv=None):
                 hack.hack_version,
                 HACK_VERSION,
                 )
-            print "hackinging in dry-run mode...\t",
+            print "\ntest only: reverse old patch in dry-run mode...\t",
             try:
-                hack.upgrade( dryrun=True )
+                hack.reverse ( dryrun=True )
             except HackFailedError:
                 print "FAILED!"
             else:
                 print "OK"
+
+        print ""
                 
     elif cmd == "patch":
         hack.upgrade()
