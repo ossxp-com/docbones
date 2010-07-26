@@ -204,7 +204,7 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt( 
                 argv, "hprt", 
-                ["help", "patch", "reverse", "test"])
+                ["help", "patch", "reverse", "test", "check"])
 
     except getopt.error, msg:
         return usage(1, msg)
@@ -220,6 +220,8 @@ def main(argv=None):
             cmd = "patch"
         elif opt in ("-t", "--test"):
             cmd = "test"
+        elif opt in ("--check"):
+            cmd = "check"
 
     
     if not cmd:
@@ -228,7 +230,13 @@ def main(argv=None):
     # hack instance
     hack = Hack()
 
-    if cmd == "test":
+    if cmd == "check":
+        if hack.hack_version == _HACK_VERSION_:
+            return 0
+        else:
+            return 1
+
+    elif cmd == "test":
         print "%s version: %s" % (_NAME_, hack.upstream_version)
 
         if hack.hack_version == _HACK_VERSION_:
