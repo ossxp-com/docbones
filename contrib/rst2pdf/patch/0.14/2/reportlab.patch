@@ -1,12 +1,19 @@
+commit ce433d1c2410e071909c6c1a5b7a28c6f8ed8d53
+Author: Jiang Xin <jiangxin@ossxp.com>
+Date:   Sat Jul 24 10:29:19 2010 +0800
+
+    ossxp patch version 2: bugfix for too long list line not wrap. (by cuirui@ossxp.com)
+
 diff --git a/reportlab/platypus/tables.py b/reportlab/platypus/tables.py
-index 1575f4e..c398fba 100755
+index 1575f4e..0e369a5 100755
 --- a/reportlab/platypus/tables.py
 +++ b/reportlab/platypus/tables.py
-@@ -653,7 +653,14 @@ class Table(Flowable):
+@@ -653,7 +653,15 @@ class Table(Flowable):
                  for rowNo in xrange(self._nrows):
                      value = self._cellvalues[rowNo][colNo]
                      style = self._cellStyles[rowNo][colNo]
 -                    new = elementWidth(value,style)+style.leftPadding+style.rightPadding
++                    # bugfix: too long list line not wrap. (by cuirui@ossxp.com)
 +                    spacebefore = 0
 +                    for x in range(colNo):
 +                        colbefore = self._cellvalues[rowNo][x]
