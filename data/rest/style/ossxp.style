@@ -31,24 +31,71 @@
 
     "pageTemplates" : {
         "coverPage":{
-              "showHeader" : true,
-              "showFooter" : true
+            "frames": [
+                ["0cm", "0cm", "100%", "100%"]
+            ],
+            "showHeader" : false,
+            "showFooter" : false
+        },
+        "contentsPage":{
+            "frames": [
+                ["0cm", "0cm", "100%", "100%"]
+            ],
+            "showHeader" : true,
+            "showFooter" : true
         }
     },
     "styles" : [
-        ["palatino" , { "parent": "bodytext","fontName": "stdFont"} ],
+        ["palatino" , {"parent": "bodytext","fontName": "stdFont"} ],
         ["redpalatino" , {"parent": "normal","fontName": "stdFont", "textColor": "red"} ],
-        ["base",{"fontSize":12,
-                 "leading":15,
-                 "bulletFontSize": 10,
-                 "textColor": black,
-                 "backColor": null,
-                 "borderColor": null,
-                 "wordWrap": "CJK"
-                }],
-        ["footer",   {"parent": normal, "backColor":#EFEFEF', "alignment": TA_CENTER }],
-        ["header",   {"parent": normal, "backColor":#EFEFEF', "alignment": TA_CENTER }],
-        ["code", {"wordWrap":null }],
+        ["base",{
+            "fontSize":12,
+            "leading":15,
+            "bulletFontSize": 10,
+            "textColor": black,
+            "backColor": null,
+            "borderColor": null,
+            "wordWrap": "CJK" }],
+        ["bodytext",{
+            "alignment":TA_JUSTIFY }],
+        ["toc", {
+            "backColor":"#EFEFEF",
+            "fontSize":10 }],
+        ["footer",   {
+            "parent": normal,
+            "textColor":"#545454",
+            "backColor":"#EFEFEF",
+            "fontSize":10,
+            "alignment": TA_CENTER }],
+        ["header",   {
+            "parent": normal,
+            "textColor":"#545454",
+            "backColor":"#EFEFEF",
+            "fontSize":10,
+            "alignment": TA_CENTER }],
+        ["headertable" , {
+            "parent" : "table",
+            "colWidths": ["20%","60%","20%"],
+            "commands": [
+              [ "FONTSIZE", [0,0], [-1,-1], "9" ],
+              [ "TEXTCOLOR", [0,0], [-1,-1], "#545454" ],
+              [ "BACKGROUND", [0,0], [-1,-1], "#EFEFEF" ]
+            ]
+        }],
+        ["footertable" , {
+            "parent" : "table",
+            "colWidths": ["45%","5%","45%"],
+            "commands": [
+              [ "FONTSIZE", [0,0], [-1,-1], "9" ],
+              [ "TEXTCOLOR", [0,0], [-1,-1], "#545454" ],
+              [ "BACKGROUND", [0,0], [-1,-1], "#EFEFEF" ]
+            ]
+        }],
+        ["code", {
+            "parent": "literal",
+            "fontSize":10,
+            "wordWrap": None
+        }],
         ["lineblock",{"parent":bodytext, "spaceBefore":6 }] 
     ],
     "linkColor": "navy"
