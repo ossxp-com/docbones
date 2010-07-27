@@ -8,12 +8,11 @@ diff --git a/reportlab/platypus/tables.py b/reportlab/platypus/tables.py
 index 1575f4e..0e369a5 100755
 --- a/reportlab/platypus/tables.py
 +++ b/reportlab/platypus/tables.py
-@@ -653,7 +653,15 @@ class Table(Flowable):
+@@ -653,7 +653,14 @@ class Table(Flowable):
                  for rowNo in xrange(self._nrows):
                      value = self._cellvalues[rowNo][colNo]
                      style = self._cellStyles[rowNo][colNo]
 -                    new = elementWidth(value,style)+style.leftPadding+style.rightPadding
-+                    # bugfix: too long list line not wrap. (by cuirui@ossxp.com)
 +                    spacebefore = 0
 +                    for x in range(colNo):
 +                        colbefore = self._cellvalues[rowNo][x]
