@@ -1,4 +1,5 @@
 require 'docbones'
+require 'date'
 
 def rst_macro_replace(file_read, file_write)
   if not File.exists? file_read
@@ -47,7 +48,7 @@ def rst_macro_replace(file_read, file_write)
     file.puts results
   end
 
-  puts "#{file_write} created from #{file_read}"
+  puts "***** #{file_write} created from #{file_read} *****"
 
 end
 
@@ -77,6 +78,21 @@ default_dpi = PROJ.default_dpi.nil? ? "" : "--default-dpi #{PROJ.default_dpi}"
   task :RSTIN2RST do
     if File.exists?( RST+".in" )
       rst_macro_replace( RST+".in", RST )
+    end
+  end
+
+  desc 'set DOC_BACKEND environment'
+  task:rst2html_env do
+    ENV["DOC_BACKEND"] = "HTML"
+    if not ENV["DOC_DATE"]
+      ENV["DOC_DATE"] = DateTime.now.strftime('%F %T')
+    end
+  end
+
+  task:rst2pdf_env do
+    ENV["DOC_BACKEND"] = "PDF"
+    if not ENV["DOC_DATE"]
+      ENV["DOC_DATE"] = DateTime.now.strftime('%F %T')
     end
   end
 
@@ -124,11 +140,17 @@ default_dpi = PROJ.default_dpi.nil? ? "" : "--default-dpi #{PROJ.default_dpi}"
   end
   
   desc 'rake all'
-  task:all => [:html,:odt,:pdf]
+  task:all do
+    puts "Sorry, all task is disabled. You should run seperate task one by one. Such as:"
+    puts "\trake html"
+    puts "\trake pdf"
+    puts "\trake odt"
+    exit 1
+  end
 
   desc 'rake html'
   task:html => [:rst2html,OUTPUT,HTML]
-  file HTML => [RST] do
+  file HTML => [:rst2html_env, RST] do
     sh "rst2html #{RST} #{css_path} #{js_path} #{HTML}"
     if !images.empty? & test(?e,images)
         sh "cp -a #{images} #{OUTPUT}"
@@ -137,12 +159,12 @@ default_dpi = PROJ.default_dpi.nil? ? "" : "--default-dpi #{PROJ.default_dpi}"
 
   desc 'rake pdf'
   task:pdf =>  [:rst2pdf,OUTPUT,PDF]
-  file PDF => [RST] do
+  file PDF => [:rst2pdf_env, RST] do
     sh "rst2pdf #{pdfstyle} #{RST} #{default_dpi} -q -o #{PDF}"
   end
   desc 'rake odt'
   task:odt => [:rst2odt,OUTPUT,ODT]
-  file ODT => [RST] do
+  file ODT => [:rst2html_env, RST] do
     sh "rst2odt #{RST} #{ODT}"
   end
 
