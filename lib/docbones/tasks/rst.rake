@@ -1,4 +1,56 @@
 require 'docbones'
+
+def rst_macro_replace(file_read, file_write)
+  if not File.exists? file_read
+    return False
+  end
+
+  results = []
+
+  File.open(file_read, "r") do |file|
+
+    while line = file.gets
+
+      # New macro format: @ENV(...)@
+      if /@.+@/.match line
+        newline = ""
+        line.split( /(@[^@]+@)/ ).each do |part|
+          if /^@.+@$/.match part
+            part=part[1...-1]
+            if part.start_with?("ENV(") and part.end_with?(")")
+              part = ENV[part[4...-1]] ? ENV[part[4...-1]] : "@UnkownENV(%s)@" % part[4...-1]
+            end
+          end
+          newline += part
+        end
+        line = newline
+
+      # Backward compatible: macro without @
+      elsif /^\.\. \|(doc_date|doc_rev)\| replace::\s*ENV\(.+\)/.match line
+        newline = ""
+        line.split( /(replace::\s*)(ENV\(.+\))/ ).each do |part|
+          if part.start_with?( "ENV(" ) and part.end_with?( ")" )
+              part = ENV[part[4...-1]] ? ENV[part[4...-1]] : "@UnkownENV(%s)@" % part[4...-1]
+          end
+          newline += part
+        end
+        line = newline
+      end
+
+      results << line
+
+    end
+
+  end
+
+  File.open(file_write, "w") do |file|
+    file.puts results
+  end
+
+  puts "#{file_write} created from #{file_read}"
+
+end
+
 PATH=Docbones::PATH
 PROJ.root= PROJ.root.nil? ? PROJ.root : PROJ.root.strip
 PROJ.name = PROJ.name.nil? ? PROJ.name : PROJ.name.strip
@@ -19,19 +71,13 @@ js_path = PROJ.js_path.strip.empty? ? "" : "--javascript=#{PROJ.js_path.strip}"
 css_path = PROJ.css_path.strip.empty? ? "" : "--stylesheet-path=#{PROJ.css_path.strip} --link-stylesheet"
 pdfstyle = PROJ.pdf_style.strip.empty? ? "" : "-s #{PROJ.pdf_style.strip}"
 default_dpi = PROJ.default_dpi.nil? ? "" : "--default-dpi #{PROJ.default_dpi}"
-  file RST+".in"
-  file RST => RST+".in" do
-    DOC_REV= ENV["DOC_REV"] ? ENV["DOC_REV"] : "ENV(DOC_REV)"
-    DOC_DATE= ENV["DOC_DATE"] ? ENV["DOC_DATE"] : Time.new.strftime("%Y-%m-%d %H:%M:%S")
-    f = File.open(RST+".in")
-    template = f.read
-    template.gsub!(/^(\.\. \|doc_rev\| replace::).*/, "\\1 #{DOC_REV}")
-    template.gsub!(/^(\.\. \|doc_date\| replace::).*/,"\\1 #{DOC_DATE}")
-    f.close
-    f = File.new(RST, "w")
-    f.print(template)
-    f.close
-    puts "#{RST} created from #{RST}.in"
+
+  desc 'create RST from RST.in'
+  file RST => [:RSTIN2RST]
+  task :RSTIN2RST do
+    if File.exists?( RST+".in" )
+      rst_macro_replace( RST+".in", RST )
+    end
   end
 
   task:rst2html do
