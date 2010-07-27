@@ -35,14 +35,14 @@
                 ["0cm", "0cm", "100%", "100%"]
             ],
             "showHeader" : false,
-            "showFooter" : false
+            "showFooter" : false 
         },
         "contentsPage":{
             "frames": [
                 ["0cm", "0cm", "100%", "100%"]
             ],
             "showHeader" : true,
-            "showFooter" : true
+            "showFooter" : true 
         }
     },
     "styles" : [
@@ -61,6 +61,18 @@
         ["toc", {
             "backColor":"#EFEFEF",
             "fontSize":10 }],
+        ["left", {
+            "parent": "bodytext",
+            "alignment": "left"
+        }],
+        ["right", {
+            "parent": "bodytext",
+            "alignment": "right"
+        }],
+        ["centered", {
+            "parent": "bodytext",
+            "alignment": "center"
+        }],
         ["footer",   {
             "parent": normal,
             "textColor":"#545454",
