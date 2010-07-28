@@ -18,7 +18,7 @@ for Docbones
 .. |Creative Commons|   image:: images/cc-icon.png
 .. _Creative Commons:   http://creativecommons.org/licenses/by-sa/3.0/
 .. |AuthorOSSXP|        replace:: 北京群英汇信息技术有限公司
-.. _AuthorOSSXP:        http://www.ossxp.coom/
+.. _AuthorOSSXP:        http://www.ossxp.com/
 .. |ArticleTitle|       replace:: reST 学习手册
 .. _ArticleTitle:       http://www.ossxp.com/doc/
 
@@ -80,7 +80,7 @@ for Docbones
                 _|
               _|
   欲穷千里目-|
-  
+
   缩进中，reST **不** 进行解析
 
 缩进停止，则开始新的段落。
@@ -101,7 +101,7 @@ for Docbones
 
 ::
 
-> *something* 
+> *something*
 > xyz
 >> xyz
 > xyz
@@ -112,7 +112,7 @@ for Docbones
 下面的段落中，以竖线 | 和一个空格做起始，维持换行的格式
 
 | 开始一个line block
-| 另外的一行, 
+| 另外的一行,
   续行。
 | 再一行
 |    含有缩进的一行
@@ -255,7 +255,7 @@ term2 : 名词
 手动编号的脚注
 ~~~~~~~~~~~~~~
 
-方括号 [1]_ 内手动编号 [1]_ ，别忘了结尾的下划线 [3]_, 可以重复引用脚注 [3]_ 
+方括号 [1]_ 内手动编号 [1]_ ，别忘了结尾的下划线 [3]_, 可以重复引用脚注 [3]_
 
 .. [1] 嵌入的脚注前后要有空格
 .. [2] 阿拉伯数字
@@ -279,7 +279,7 @@ term2 : 名词
 
 带有label 的自动脚注 [#note]_ 会根据前面的脚注情况，自动编号。显示为
 "[n]".  如果多此引用此脚注，可以多次出现同 label 的自动脚注 [#note]_ 。
-如果向使用链接指向脚注，可以用 *简单链接* 语法做指向。如： note_ 
+如果向使用链接指向脚注，可以用 *简单链接* 语法做指向。如： note_
 
 .. [#note] This is the footnote labeled "note".
 
@@ -400,7 +400,7 @@ True   True   True
 
    .. figure:: images/cc-icon.png
       :scale: 50
-   
+
       缩放了 50% 的图片
 
  * 图片缩放

@@ -1,4 +1,4 @@
-.. START_PDF_HEADER_FOOTER 
+.. START_PDF_HEADER_FOOTER
 
 .. header::
 
@@ -10,7 +10,7 @@
    |   |章节 ###Section###   |第###Page###页  |
    +---+---------------------+----------------+
 
-.. footer:: 
+.. footer::
 
    .. class:: footertable
 
@@ -20,11 +20,11 @@
    ||ArticleTitle|_      |   ||AuthorOSSXP|_     |
    +---------------------+---+-------------------+
 
-.. END_PDF_HEADER_FOOTER 
+.. END_PDF_HEADER_FOOTER
 
-.. START_HTML_HEADER_FOOTER 
+.. START_HTML_HEADER_FOOTER
 
 .. header:: |ArticleTitle|_
 .. footer:: |AuthorOSSXP|_ - http://www.ossxp.com/
 
-.. END_HTML_HEADER_FOOTER 
+.. END_HTML_HEADER_FOOTER
